@@ -1,15 +1,15 @@
-antlers
+Antlers
 =======
 
 ## Synopsis
 
-A blogging platform build using ExpressJS (http://expressjs.com/) and NodeJS (http://nodejs.org).
+A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (http://nodejs.org).
 
 ## Installation
 
 1. Download and extract the files
-2. Enter directory from Node command prompt
-3. issue command: ```npm install```
+2. Enter directory from Node command/terminal
+3. Issue command: ```npm install```
 4. Start with: ```node app.js```
 5. Access the application using:  ```http://localhost:3000```
 
