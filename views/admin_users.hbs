@@ -1,0 +1,124 @@
+<nav>
+	<ul class="list-unstyled main-menu">
+		<li class="text-right"><a href="#" id="nav-close"><span class="glyphicon glyphicon-remove"></span></a></li>
+		<li><a href="/admin/">Dashboard<span class="icon"></span></a></li>
+		<li><a href="/admin/editor/">New Post<span class="icon"></span></a></li>
+		<li><a href="/admin/settings">Settings<span class="icon"></span></a></li>
+		<li class="active"><a href="/admin/users">Users<span class="icon"></span></a></li>
+	</ul>
+	<ul class="list-unstyled main-menu">
+		<li><a href="/admin/logout">Logout<span class="icon"></span></a></li>
+	</ul>
+</nav>
+
+
+<div class="container-fluid" id="edit_container">
+	{{#if message}}
+		<script> 
+			$.bootstrapGrowl("{{message}}", {type: '{{message_type}}',offset: {from: 'top', amount: 10},align: 'center',width: 400,delay: 2000});
+		</script>
+	{{/if}}	
+	<div id="users_editor" class="col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span><b>User details</b></span>
+				<a href="/admin/users/new"><span class="pull-right btn btn-success">New user</span></a>
+			</div>
+			<form role="form" id="user_form" method="post" action="/admin/user/action_{{function}}">
+				<input type="hidden" name="frm_users_id" id="frm_users_id" value="{{user.0._id}}"/>
+				<table class="table table-condensed" style="width: 50%">
+					<tr>
+						<td data-href="">
+							<div id="users_body_row" style="overflow-y:auto;">
+								<table class="table table-condensed">
+									<tr>
+										<td width="30%">Enter Name *</td>
+										<td>
+											<input type="text" class="form-control" name="frm_users_name" id="frm_users_name" value="{{user.0.user_name}}" placeholder="Enter Name" required>
+										</td>
+									</tr>
+									<tr>
+										<td>Enter Email *</td>
+										<td>
+											<input type="email" class="form-control" id="frm_email1" name="frm_email1" value="{{user.0.user_email}}" placeholder="Enter Email" required>
+										</td>
+									</tr>
+									<tr>
+										<td>Confirm Email *</td>
+										<td>
+											<input type="email" class="form-control" id="frm_email2" name="frm_email2" value="{{user.0.user_email}}" placeholder="Confirm Email" required>
+										</td>
+									</tr>
+									<tr>
+										<td>Password *</td>
+										<td>
+											<input type="password" name="frm_password" id="frm_password" class="form-control" required>
+										</td>
+									</tr>
+									<tr>
+										<td>Confirm Password *</td>
+										<td>
+											<input type="password" name="frm_password_confirm" id="frm_password_confirm" class="form-control" required>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<span class="pull-right"><button type="submit" id="save_settings" class="btn btn-success">Save <span class="glyphicon glyphicon-floppy-disk"></span></button></span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!--<div class="col-lg-12">
+	<div class="col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span><b>Users</b></span>
+			</div>
+			<table class="table table-condensed">
+				<tr>
+					<td width="30%">Enter Name *</td>
+					<td>
+						<input type="text" class="form-control" name="frm_users_name" id="frm_users_name" placeholder="Enter Name" required>
+					</td>
+				</tr>
+				<tr>
+					<td>Enter Email *</td>
+					<td>
+						<input type="email" class="form-control" id="frm_email1" name="frm_email1" placeholder="Enter Email" required>
+					</td>
+				</tr>
+				<tr>
+					<td>Confirm Email *</td>
+					<td>
+						<input type="email" class="form-control" id="frm_email2" name="frm_email2" placeholder="Confirm Email" required>
+					</td>
+				</tr>
+				<tr>
+					<td>Password *</td>
+					<td>
+						<input type="password" name="frm_password" id="frm_password" class="form-control" required>
+					</td>
+				</tr>
+				<tr>
+					<td>Confirm Password *</td>
+					<td>
+						<input type="password" name="frm_password_confirm" id="frm_password_confirm" class="form-control" required>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<span class="pull-right"><button type="submit" id="save_settings" class="btn btn-success">Add User <span class="glyphicon glyphicon-floppy-disk"></span></button></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>-->

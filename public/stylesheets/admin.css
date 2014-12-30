@@ -1,0 +1,277 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+html, body {height: 100%;}
+body { background-color: #EDECE4; !important}
+
+#frm_post_body, #frm_post_body_preview , #post_list_wrapper{
+    width: 100%;
+    height: 100%;
+}
+
+#post_list, #editor_preview{ 
+	overflow-y: auto;
+}
+
+.tags_input{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+#post_list_wrapper{
+	overflow-y: auto;
+}
+
+#body_row{
+	overflow-y: auto;
+}
+
+#body_outer{
+	padding-bottom: 0px;
+}
+
+#editor{
+	padding-bottom: 0px;
+}
+
+#editor_preview{
+	padding-left: 0px;
+}
+
+.navbar {height:32px !important}
+
+#edit_posts tr:hover{
+	cursor: pointer;
+}
+
+#edit_container{
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+#post_list, #edit_container{
+	padding-left: 0px;
+}
+
+.Published-status
+{
+	color: #5CB85C;
+}
+
+.Draft-status
+{
+	color: #D9534F;
+}
+
+/* ==========================================================================
+I like the bootstrap button background colours as my notification colours.
+========================================================================== */
+.alert-success{
+	background-color: #5CB85C;
+	border-color: #4CAE4C;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.alert-danger{
+	background-color: #D9534F;
+	border-color: #D43F3A;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.alert-warning {
+	background-color: #F0AD4E;
+    border-color: #EEA236;
+    color: #FFFFFF;
+	text-align: center;
+}
+
+.alert-info {
+	background-color: #5BC0DE;
+    border-color: #46B8DA;
+    color: #FFFFFF;
+	text-align: center;
+}
+
+/* ==========================================================================
+I like the bootstrap button background colours as my notification colours.
+========================================================================== */
+   
+a.nav-expander {
+  color: #FFFFFF;
+  display: block;
+  font-size: 15px;
+  font-weight: 400;
+  height: 50px;
+  margin-right: 0;
+  padding: 0.8em 1.6em 2em;
+  position: absolute;
+  right: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  top: 0;
+  transition: right 0.3s ease-in-out 0s;
+  width: 70px;
+  z-index: 12;
+  
+  transition: right 0.3s ease-in-out 0s;
+  -webkit-transition: right 0.3s ease-in-out 0s;
+  -moz-transition: right 0.3s ease-in-out 0s;
+  -o-transition: right 0.3s ease-in-out 0s;
+}
+
+a.nav-expander:hover {
+  cursor: pointer;
+}
+
+a.nav-expander.fixed {
+  position: fixed;
+}
+
+.nav-expanded a.nav-expander.fixed {
+    right: 12em;
+}
+
+nav {
+  background-color: #ECF0F1;
+  display: block;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  right: -12em;
+  font-size: 15px;
+  top: 0;
+  width: 12em;
+  z-index: 2000;
+  transition: right 0.3s ease-in-out 0s;
+  -webkit-transition: right 0.3s ease-in-out 0s;
+  -moz-transition: right 0.3s ease-in-out 0s;
+  -o-transition: right 0.3s ease-in-out 0s;
+
+}
+.nav-expanded nav {
+  right: 0;
+}
+
+body.nav-expanded {
+  margin-left: 0em;
+  transition: right 0.4s ease-in-out 0s;
+  -webkit-transition: right 0.4s ease-in-out 0s;
+  -moz-transition: right 0.4s ease-in-out 0s;
+  -o-transition: right 0.4s ease-in-out 0s;
+}
+
+#nav-close {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight: 300;
+  font-size: 24px;
+  padding-right: 10px;
+  padding-top: -30px;
+}
+
+.active{
+	background-color: #B7B5B5;
+}
+
+.main-menu {
+  padding-top: 0px;
+}
+
+.main-menu li {
+  font-size: 18px;
+  padding: 12px;
+}
+
+.main-menu li a {
+  color: #2C3E50;
+  text-decoration: none;
+}
+
+.main-menu li a:hover {
+  color: #C4C2C2;
+  text-decoration: none;
+}
+
+.main-menu li .sub-nav {
+  border-bottom: 0px;
+  padding: 4px;
+}
+
+.main-menu a .caret {
+	width: 0;
+	height: 0;
+	display: inline-block;
+	vertical-align: top;
+	border-top: 4px solid #4f5963;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+	content: "";
+    margin-top: 8px;
+}
+
+.main-menu a:hover .caret {
+	border-top-color: #4f5963;
+}
+
+.main-menu li.open > a > .caret {
+	border-top: none;
+	border-bottom: 4px solid #4f5963;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+
+.main-menu li.open > a:hover > .caret {
+	border-bottom-color: #4f5963;
+}
+
+.icon:before {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  text-transform: none;
+  content: '\f105';
+}
+
+.main-menu li > a > span.icon {
+  float: right;
+  margin: 0.1em 1.7em -0.1em 0;
+  opacity: 0;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+
+}
+
+.main-menu li > a:hover > span.icon {
+  float: right;
+  margin: 0.1em 0.8em -0.1em 0;
+  opacity: 1;
+}
+
+#newpost_container
+{
+	min-height: 100%;
+	height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

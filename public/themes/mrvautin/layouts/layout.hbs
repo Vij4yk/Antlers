@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{config.blog_title}}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap.min.css' />
+		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap-theme.min.css' />
+		<link rel='stylesheet' href='/themes/{{theme}}/css/style.css' />
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,800italic,400,700,800|Gentium+Book+Basic:400,400italic,700,700italic" type="text/css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=476789989114200&version=v2.0";fjs.parentNode.insertBefore(js, fjs);}(document, 'script', 'facebook-jssdk'));
+		</script>
+		<script src="/javascripts/bootstrap-responsive_img.js"></script>
+		<script>
+			$( document ).ready(function() {
+				responsive_image("#body_section img");
+			});
+		</script>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		{{#if config.blog_google_analytics}}
+			{{{config.blog_google_analytics}}}
+		{{/if}}
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="col-xs-12 col-md-offset-1 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+				<div class="welcome_header">
+					<a href="/">
+						{{#if config.blog_logo}}					
+							<img src="data:image/png;base64,{{config.blog_logo}}" width="60px" height="60px">
+						{{else}}
+							<img src="/themes/{{theme}}/images/default_logo.png" width="60px" height="60px">
+						{{/if}}
+					</a>
+					<h3 class="text-center">{{config.blog_title}}</h3>
+				</div>
+				
+				<div id="body_section" class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+					{{{body}}}
+					<div class="text-center">
+						<ul class="pagination pagination-sm pagination-xs pagination-lg">
+							{{#each pagination_array}}
+								{{{this}}}
+							{{/each}}
+						</ul>
+					</div>
+					
+					<script src="/themes/{{theme}}/js/bootstrap.min.js"></script>
+				</div>
+				<div class="col-sm-3 col-md-3 col-lg-3 pull-right text-center">
+					<div class="row">
+						<h3 style="color: #C9302C">About me</h3>
+						<p>This is a blog running on the mrvautin software. It's running on NodeJS.</p>
+
+						<table class="table">
+							<tr>	
+								<td><a href="http://facebook.com"><img src="/themes/{{theme}}/images/facebook.png" width="40"></a></td>
+								<td><a href="http://instagram.com"><img src="/themes/{{theme}}/images/instagram.png" width="40"></a></td>
+								<td><a href="http://twitter.com"><img src="/themes/{{theme}}/images/twitter.png" width="40"></a></td>
+							</tr>
+						</table>
+					</div>
+					<div class="row">
+						<p><a href="/About-me">About me</a></p>
+					</div>
+					<div class="row">
+						<div class="text-center" style="background-color: #C9302C; height: 300px; padding-top: 110px; padding-right: 0px;"><h2 style="color: white;">Ad</h2></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,8 @@
+blog_title~~mrvautin
+blog_description~~A NodeJS blogging platform
+blog_email~~mrvautin@gmail.com
+blog_posts_per_page~~3
+blog_pagination_links~~2
+blog_theme~~antlers
+blog_logo~~
+blog_google_analytics~~

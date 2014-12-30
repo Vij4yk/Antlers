@@ -1,0 +1,115 @@
+body {
+  font-family: 'Open Sans',sans-serif;
+  line-height: 1.918;
+}
+
+html {
+  font-family: 'Open Sans',sans-serif;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+
+a {
+  color: #333;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #999;
+}
+
+/* style the fyre commenting system */
+.fyre-help
+{
+	display: none;
+}
+.fyre-editor{
+	padding-top: 20px;
+}
+/* style the fyre commenting system */
+
+.page-header-inline{
+	display: inline-block;
+    margin: 40px 0 20px;
+    padding-bottom: 9px;
+	color: #000000;
+    font-family: 'Open Sans',sans-serif;
+}
+
+a.post_title{
+	color: #333;
+	text-decoration: none;
+}
+
+.tags, .tags a{
+	color: #333;
+	font-weight:bold;
+	text-decoration: none;
+}
+
+.tags:hover{
+	color: #333;
+	font-weight:bold;
+}
+
+.spacer{
+	color: #333333;
+	font-weight:bold;
+}
+
+.row img{
+	display: block;
+    margin-left: auto;
+    margin-right: auto 
+}
+
+.post_heading{
+	color: #333;
+}
+
+.inline {
+    display:inline-block;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #333;
+    border-color: #333;
+    color: #fff;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: #333;
+}
+
+.navbar .container { height: 2em; }
+.header_bar { background-color: #333; padding-bottom: 1em; color: white;}
+.blog_head_link { color: white; text-decoration:none;}
+.blog_head_link:hover { color: white; text-decoration:none;}
+.edit-pencil{color: #999999;}
+
+.welcome_header {
+    margin: 0 0 5.874em;
+    padding: 5.874em 0;
+	border-bottom: 5px solid #DDDDDD;
+	text-align: center;
+	font-family: 'Open Sans',sans-serif;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+.h6{
+	font-weight: 900;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+    font-family: 'Open Sans',sans-serif;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    color: #333;
+    text-decoration: none;
+}
+
+h2{
+	font-size: 2.244em
+}

@@ -1,0 +1,111 @@
+body {
+  font-family: 'Open Sans',sans-serif;
+  line-height: 1.918;
+}
+
+html {
+  font-family: 'Open Sans',sans-serif;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+
+a {
+  color: #C9302C; 
+}
+
+
+/* This gets Google to fall into place */
+.social {
+font-size: 1px;
+}
+ 
+/* This gets Facebook to fall into place */
+.social iframe {
+vertical-align: middle;
+}
+ 
+/* Set an optional width for your button wrappers */
+.social span {
+display: inline-block;
+width: 110px;
+}
+ 
+/* Adjust the widths individually if you like */
+.social .google {
+width: 75px;
+}
+
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #C9302C;
+    border-color: #C9302C;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: #C9302C;
+}
+
+.page-header-inline{
+	display: inline-block;
+    margin: 40px 0 20px;
+    padding-bottom: 9px;
+	color: #000000;
+    font-family: 'Open Sans',sans-serif;
+}
+
+a.post_title{
+	color: #C9302C;
+}
+
+.tags{
+	color: #C9302C;
+	font-weight:bold;
+}
+
+.spacer{
+	color: #333333;
+	font-weight:bold;
+}
+
+.row img{
+	display: block;
+    margin-left: auto;
+    margin-right: auto 
+}
+
+.inline {
+    display:inline-block;
+}
+
+.navbar .container { height: 2em; }
+.header_bar { background-color: #c9302c; padding-bottom: 1em; color: white;}
+.blog_head_link { color: white; text-decoration:none;}
+.blog_head_link:hover { color: white; text-decoration:none;}
+.edit-pencil{color: #999999;}
+
+.welcome_header {
+  margin: 0 0 2.874em;
+  padding: 5.874em 0;
+	border-bottom: 5px solid #DDDDDD;
+	text-align: center;
+	font-family: 'Open Sans',sans-serif;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+.h6{
+	font-weight: 900;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #000000;
+    font-family: 'Open Sans',sans-serif;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    color: #000000;
+    text-decoration: none;
+}
+
+h2{
+	font-size: 2.244em
+}
