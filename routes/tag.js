@@ -20,7 +20,7 @@ function get_all_posts(req, res, tag) {
 	// get the theme from the settings
 	var theme = config.blog_theme;
 	
-	db.posts.find({post_tags: /tag/, post_status: '1'}).sort({post_date: -1}).exec(function (err, posts) {	
+		db.posts.find({post_tags: new RegExp(tag), post_status: '1'}).sort({post_date: -1}).exec(function (err, posts) {	
 		// We store the post in markdown format and convert to HTML to render in the view and
 		// also fix and trim the tags into an array
 		for (var post in posts){
