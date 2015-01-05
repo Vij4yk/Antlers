@@ -15,7 +15,7 @@ A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (ht
 
 ## Demo
 
-See it in action here: http://mrvautin.com
+See it in action here: http://mrvautin.com/Antlers
 
 ## License
 
