@@ -1,46 +1,21 @@
 <div class="row">    
 	<div class="col-md-10 col-md-offset-2">
-		<h4><span class="text-muted">{{custom_date this.post_date "dddd, MMMM Do, YYYY"}}</span>
+		<h4><span class="text-muted">{{custom_date this.post_date "dddd, MMMM do, YYYY"}}</span>
 			{{#ifCond is_logged_on "===" "true"}} 
 				<a href="/admin/editor/{{this.post_id}}" class="glyphicon glyphicon-pencil edit-pencil"></a>
 			{{/ifCond}}	
 		</h4>
+		<h2>{{post_title}}</h2><br/>
 		<div class="row">
 			<div class="col-xs-9">
-				<h2 class="post_heading">{{post_title}}</h2><br/>
 				<p>{{{post_body}}}</p><br/>
 				<p class="pull-left">
 					{{#each this.post_tags}}
 						<span class="tags"><a href="/tag/{{this}}">{{this}}</a></span>
 						<span class="spacer">|</span> 
-					{{/each}}
-				</p>
+					{{/each}} 
 			</div>
-		</div>
-		<!-- START: Livefyre Embed -->
-		<h3>Comments</h3>
-		<div class="row">
-			<div class="col-xs-9">
-				<div id="livefyre-comments"></div>
-				<script type="text/javascript" src="http://zor.livefyre.com/wjs/v3.0/javascripts/livefyre.js"></script>
-				<script type="text/javascript">
-				(function () {
-					var articleId = fyre.conv.load.makeArticleId(null);
-					fyre.conv.load({}, [{
-						el: 'livefyre-comments',
-						network: "livefyre.com",
-						siteId: "366723",
-						articleId: articleId,
-						signed: false,
-						collectionMeta: {
-							articleId: articleId,
-							url: fyre.conv.load.makeCollectionUrl(),
-						}
-					}], function() {});
-				}());
-				</script>
-				<!-- END: Livefyre Embed -->
-			</div>
+	
 		</div>
 	</div>
 </div>

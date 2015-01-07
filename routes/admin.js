@@ -46,7 +46,8 @@ router.get('/preview/:id', restrict, function(req, res) {
 	// get local vars from session
 	var sess_array = get_session_array(sess);
 	
-	db.posts.find({post_id: req.params.id}, function (err, post) {
+	db.posts.find({"post_id": Number(req.params.id)}, function (err, post) {
+	//db.posts.find({"post_id": 10}, function (err, post) {
 		if(post.length > 0){
 			post_title = post[0].post_title;
 			post_body = marked(post[0].post_body)
@@ -287,7 +288,7 @@ router.get('/editor/:id', restrict, function(req, res) {
 	app.locals.layout = "admin_layout.hbs";
 	app.locals.settings.views = __dirname + "../../views/";	
 	
-	db.posts.find({ post_id: req.params.id }).sort({ post_date: -1 }).exec(function (err, post){
+	db.posts.find({ "post_id": Number(req.params.id) }).sort({ post_date: -1 }).exec(function (err, post){
 		if(post.length > 0){
 				post_title = post[0].post_title;
 				post_title_clean = post[0].post_title_clean;
@@ -326,7 +327,7 @@ router.get('/deletepost/:id', restrict, function(req, res) {
 	var db = req.db;
 	
 	// remove the record requested
-	db.posts.remove({ post_id: req.params.id}, {}, function (err, numRemoved) {
+	db.posts.remove({ "post_id": Number(req.params.id)}, {}, function (err, numRemoved) {
 		if(err){
 			req.session.message = "Error " + err;
 			req.session.message_type = "danger";
@@ -516,7 +517,7 @@ router.post('/savepost', function(req, res) {
 													post_date: db_values["$post_date"]["_d"],
 													post_status: db_values["$post_status"],
 													post_static_page: db_values["$post_static_page"],
-													post_id: req.body.frm_post_id
+													post_id: Number(req.body.frm_post_id)
 											  }}, function (err, numReplaced) {
 			db.posts.persistence.compactDatafile();
 			if(err) {
@@ -535,13 +536,16 @@ router.post('/savepost', function(req, res) {
 				req.session.post_status = req.body.frm_post_status;
 				res.redirect('/admin/editor/' + req.body.frm_post_id);
 			}
+			
+			
 		});
 	}else{
 		// This is a new post and should be inserted
 		var new_post_id = 0;
-		db.posts.findOne({}).sort({ post_id: -1}).exec(function (err, doc) {
+		db.posts.findOne({}).sort({ "post_id": -1 }).exec(function (err, doc){
+			// get the next logical post_id
 			new_post_id = Number(doc.post_id) + 1;
-			var doc = { post_id: new_post_id.toString()
+			var doc = { "post_id": Number(new_post_id)
 				   , post_title: db_values["$post_title"]
 				   , post_title_clean: db_values["$post_title_clean"]
 				   , post_body: db_values["$post_body"]

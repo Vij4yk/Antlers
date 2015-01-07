@@ -12,12 +12,13 @@ router.get('*', function(req, res) {
 	var post_title = url.parse(req.url).pathname.substring(1);
 	var index_configurator = req.index_configurator;
 	var app = req.app;	
+	var string = req.string;
 	
 	// get posts per page config value
 	var posts_per_page = index_configurator.blog_posts_per_page;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme;
+	var theme = index_configurator.blog_theme.trim();
 	
 	// if the posts per page is not an integer we use 5 as default
 	if(isInt(posts_per_page) == false)
@@ -50,6 +51,7 @@ router.get('*', function(req, res) {
 				var post_date = post[0].post_date;
 				var post_owner = post[0].post_owner.toUpperCase();
 				var post_id = post[0].post_id;
+				var post_tags = post[0].post_tags;
 				
 				var view_type = "post";
 				if(post[0].post_static_page == "on"){
@@ -64,11 +66,14 @@ router.get('*', function(req, res) {
 										"post_title": post_title,
 										"post_date": post_date,
 										"post_owner": post_owner,
-										"meta_description": post_body.substring(0, 150),
+										"meta_description": string(post_body.substring(0, 150)).stripTags().s,
 										"post_id": post_id,
+										"post_tags": helpers.get_tag_array(post_tags),
+										"post_tags_meta": post_tags,
 										helpers: helpers,
 										"is_logged_on": is_logged_on(req),
-										theme: theme
+										theme: theme,
+										full_url: req.protocol + '://' + req.get('host') + req.originalUrl
 									});
 			}else{
 				// no record is found so we render a 404
@@ -108,7 +113,7 @@ function get_all_posts(req, res, posts_per_page) {
 	var max_pagination_links = index_configurator.blog_pagination_links;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme;
+	var theme = index_configurator.blog_theme.trim();
 	
 	// if the posts per page is not an integer we use 5 as default
 	if(isInt(posts_per_page) == false){
@@ -123,6 +128,7 @@ function get_all_posts(req, res, posts_per_page) {
 		var total_pages = Math.ceil(post_count.length / posts_per_page);
 		
 		db.posts.find({post_date: {$lte: moment()},post_status: '1', post_static_page: 'off'}).skip(start_page).limit(posts_per_page).sort({ post_date: -1 }).exec(function(err, posts) {
+			
 			// fix the post array
 			for (var post in posts){
 				posts[post].post_body = marked(posts[post].post_body); 
@@ -150,7 +156,8 @@ function get_all_posts(req, res, posts_per_page) {
 									"pagination_array": pagination_array, 
 									"is_logged_on": is_logged_on(req),
 									theme: theme,
-									base_url: req.protocol + "://" + req.headers.host
+									base_url: req.protocol + "://" + req.headers.host,
+									full_url: req.protocol + '://' + req.get('host') + req.originalUrl
 								});
 		});
 	});

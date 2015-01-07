@@ -16,6 +16,7 @@ var configurator = require('configurator');
 var index_configurator = require('configurator').get_config();
 var multer = require('multer');
 var node_pagination = require('pagination');
+var string = require('string');
 
 // load the db
 var db = new nedb();
@@ -99,6 +100,7 @@ app.use(function(req,res,next){
 	req.moment = moment;
 	req.bcrypt = bcrypt;
 	req.handlebars = handlebars;
+	req.string = string;
     next();
 });
 

@@ -80,7 +80,8 @@ router.get('/:id', function(req, res) {
 									"total_pages": total_pages, 
 									"pagination_array": pagination_array, 
 									"theme": theme,
-									"is_logged_on": is_logged_on(req)
+									"is_logged_on": is_logged_on(req),
+									full_url: req.protocol + '://' + req.get('host') + req.originalUrl
 								});
 		});
 	});

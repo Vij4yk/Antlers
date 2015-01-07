@@ -2,26 +2,31 @@
 <html>
 	<head>
 		<title>{{post_title}}</title>
-		<meta charset="utf-8">
-		<meta name="Description" content="{{meta_description}}" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta name="description" content="{{meta_description}}">
+		<meta name="keywords" content="{{post_tags_meta}}">
+		<meta name="robots" content="index,follow">
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap-theme.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/style.css' />
 		<link rel="shortcut icon" href="/themes/{{theme}}/favicon.ico" />
+		<!-- Open Graph meta -->
+		<meta property="og:title" content="{{post_title}}"/>
+		<meta property="og:url" content="{{full_url}}"/>
+		<meta property="og:site_name" content="{{config.blog_title}}"/>
+		<meta property="og:type" content="article"/>
+		<!-- Open Graph meta -->
 	</head>
-	<body>
+	<body style="padding-top: 110px;">
 		<div class="navbar-fixed-top header_bar">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-7">
-						<h2><a class="blog_head_link" href="/">{{config.blog_title}}</a></h2>
+						<a class="blog_head_link pull-left" href="/"><img src="/themes/{{theme}}/images/logo_inverted.png" height="85px"></a>
 					</div>
 				</div> 
 			</div>
-		</div>
-		<br/><br/><br/>
-		
+		</div>	
 		<div class="container">
 			<div class="row"> 
 				<div class="col-md-12"> 

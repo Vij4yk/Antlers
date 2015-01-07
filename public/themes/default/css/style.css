@@ -1,3 +1,10 @@
+@media (max-width: 767px) {
+	body {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+}
+
 body {
   font-family: 'Open Sans',sans-serif;
   line-height: 1.918;
