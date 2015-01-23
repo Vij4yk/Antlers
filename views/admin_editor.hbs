@@ -1,84 +1,75 @@
-<nav>
-	<ul class="list-unstyled main-menu">
-		<li class="text-right"><a href="#" id="nav-close"><span class="glyphicon glyphicon-remove"></span></a></li>
-		<li><a href="/admin/">Dashboard<span class="icon"></span></a></li>
-		<li class="active"><a href="/admin/editor/">New Post<span class="icon"></span></a></li>
-		<li><a href="/admin/settings">Settings<span class="icon"></span></a></li>
-		<li><a href="/admin/users">Users<span class="icon"></span></a></li>
-	</ul>
-	</hr>
-	<ul class="list-unstyled main-menu">
-		<li><a href="/admin/logout">Logout<span class="icon"></span></a></li>
-	</ul>
-</nav>
-
-<form role="form" action="/admin/savepost" method="post" name="frm_editor" id="frm_editor">
-	<div id="editor" class="col-sm-12 col-md-12 col-lg-12">
-		{{#if message}}
-			<script> 
-				$.bootstrapGrowl("{{message}}", {type: '{{message_type}}',offset: {from: 'top', amount: 10},align: 'center',width: 400,delay: 2000});
-			</script>
-		{{/if}}
-		
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<span><b>Edit Post</b></span>
-				{{#if post_id}}
-					<span class="pull-right"><button type="button" onclick="confirm_delete({{post_id}});" class="btn btn-danger btn-sm">Delete post <span class="glyphicon glyphicon-trash"></span></button></span>
-					<span class="pull-right" style="padding-right: 10px;"><a href="../../{{post_title_clean}}" target="_blank" class="btn btn-info btn-sm">Preview post</a></span>
-				{{/if}}
-			</div>
-			<table class="table table-condensed">
-				<tr id="options_row">
-					<td data-href="" style="padding-bottom: 0px;" width="33%">
-						<div style="padding-top: 5px;" class="input-group">
-							<div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
-							<input class="form-control" id="frm_datetimepicker" name="frm_datetimepicker" type="text" value="{{post_date}}" style="width: 200px;" />
-						</div>
-					</td>
-					<td width="33%" style="text-align: center; vertical-align: middle;" >
-						<input type="checkbox" name="frm_static_page" {{#ifCond post_static_page '==' 'on'}}checked{{/ifCond}} /> Static page
-					</td>
-					<td data-href="" style="padding-bottom: 0px;" width="33%">
-						<div class="pull-right">
-							<div style="padding-top: 5px;">
-							<label for="frm_post_status" style="padding-top: 5px; padding-right: 5px;">Post status: </label>
-							<select class="selectpicker pull-right" style="padding-top: 5px;" name="frm_post_status" id="frm_post_status">
-								<option value="0" {{#ifCond post_status '==' '0'}}selected{{/ifCond}} data-content="<span class='label label-danger'>Draft</span>">Draft</option>
-								<option value="1" {{#ifCond post_status '==' '1'}}selected{{/ifCond}} data-content="<span class='label label-success'>Published</span>">Published</option>
-							</select>
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr id="title_row">
-					<td colspan="3">
-						<div><input type="text" id="frm_post_title" name="frm_post_title" class="form-control" placeholder="Post title" value="{{post_title}}"></div>
-					</td>
-				</tr>
-				<tr id="form_body_row">
-					<td colspan="3">
-						<div id="body_outer">
+<div class="row" id="editor_header_row">
+	{{#if message}}
+		<script> 
+			$.bootstrapGrowl("{{message}}", {type: '{{message_type}}',offset: {from: 'top', amount: 10},align: 'center',width: 400,delay: 2000});
+		</script>
+	{{/if}}
+	<div class="col-lg-12">
+		<h1 class="page-header">Editor</h1>
+		<ol class="breadcrumb">
+		  <li><a href="/admin/dashboard">Home</a></li>
+		  {{#if post_id}}
+			<li><a href="/admin/preview/{{post_id}}">Preview</a></li>
+		  {{/if}}
+		  <li class="active">Editor</li>
+		</ol>
+	</div>	
+</div>
+<div class="row">
+	<div id="wrap_post_body" class="col-lg-12 col-md-12">
+		<form role="form" action="/admin/savepost" method="post" name="frm_editor" id="frm_editor">
+			<div class="chat-panel panel panel-default">
+				<div class="panel-heading">
+					Post
+					<div class="btn-group pull-right" style="margin-top: -4px;">
+						<input class="form-control input-sm" id="frm_datetimepicker" size="15" name="frm_datetimepicker" type="text" value="{{post_date}}" />
+					</div>
+					<div id="editor_cog" class="btn-group pull-right" style="margin-top: -4px;">
+						<button type="button" class="btn btn-default dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown">
+						</button>
+						<ul class="dropdown-menu pull-right" style="min-width: 120px;" role="menu">
+							<li>
+								<div class="center-block" style="text-align: center; padding-bottom: 5px; width: 100px;">
+									<a href="../../{{post_title_clean}}" target="_blank" class="btn btn-info btn-sm" style="width: 100%">Preview post</a>
+								</div>
+							</li>
+							<li>
+								<button type="button" onclick="confirm_delete({{post_id}});" class="btn btn-danger btn-sm center-block" style="width: 100px;">Delete post <span class="glyphicon glyphicon-trash"></span></button>
+							</li>
+						</ul>
+					</div>
+					<div class="btn-group pull-right" style="margin-top: -3px;">
+					  <button id="status_dropdown" type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<span id="status_text"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu">
+					    <li><a id="draft_status" style="color: #D9534F;" href="#">Draft</a></li>
+					    <li><a id="published_status" style="color: #5CB85C;" href="#">Published</a></li>
+					  </ul>
+					</div>
+				</div>
+				<div id="editor_body" class="panel-body">
+					<ul class="chat">
+						<li><input type="text" id="frm_post_title" name="frm_post_title" class="form-control" placeholder="Post title" value="{{post_title}}">
+						</li>
+						<li id="editor_body_li">
 							<textarea class="form-control" id="frm_post_body" name="frm_post_body" placeholder="Post body">{{post_body}}</textarea>
-						</div>
-					</td>
-				</tr>
-				<tr id="tags_row">
-					<td colspan="3">
-						<div class="col-sm-12 col-md-12 col-lg-12 tags_input">
-							<div class="input-group">
-								<input type="text" class="form-control fluid-tokenfield" id="frm_post_tags" name="frm_post_tags" placeholder="comma seporated tags" value="{{post_tags}}">
-								<span class="input-group-btn">
-									<button type="submit" class="btn btn-success pull-right">Save post</button>
-								</span>
-							</div>
-						</div>
-					</td>
-				</tr>
-			</table>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-footer">
+					<div class="input-group">
+						<input id="frm_post_tags" name="frm_post_tags" type="text" class="form-control input-sm" value="{{post_tags}}" placeholder="Type your message here..." />
+						<span class="input-group-btn">
+							<button class="btn btn-success btn-sm">Save</button>
+						</span>
+					</div>
+				</div>
+			</div>
 			<input type="hidden" name="frm_save_type" value="{{header}}">
 			<input type="hidden" name="frm_post_id" value="{{post_id}}">
 			<input type="hidden" name="frm_db_id" value="{{db_id}}">
-		</div>
-	</div>		
-</form>
+			<input type="hidden" name="frm_post_status" id="frm_post_status" value="{{post_status}}">
+		</form>
+	</div>
+</div>

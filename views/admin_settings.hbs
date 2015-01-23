@@ -1,93 +1,67 @@
-<nav>
-	<ul class="list-unstyled main-menu">
-		<li class="text-right"><a href="#" id="nav-close"><span class="glyphicon glyphicon-remove"></span></a></li>
-		<li><a href="/admin/">Dashboard<span class="icon"></span></a></li>
-		<li><a href="/admin/editor/">New Post<span class="icon"></span></a></li>
-		<li class="active"><a href="/admin/settings">Settings<span class="icon"></span></a></li>
-		<li><a href="/admin/users">Users<span class="icon"></span></a></li>
-	</ul>
-	<ul class="list-unstyled main-menu">
-		<li><a href="/admin/logout">Logout<span class="icon"></span></a></li>
-	</ul>
-</nav>
-
-<div class="col-xs-12">
+<div class="row" id="editor_header_row">
 	{{#if message}}
 		<script> 
 			$.bootstrapGrowl("{{message}}", {type: '{{message_type}}',offset: {from: 'top', amount: 10},align: 'center',width: 400,delay: 2000});
 		</script>
 	{{/if}}
-	<form role="form" method="post" action="/admin/savesettings" name="settings_form" enctype="multipart/form-data">
+	<div class="col-md-offset-1 col-md-10 col-lg-offset-1 col-lg-10">
+		<h1 class="page-header">Settings</h1>
+	</div>	
+</div>
+<div class="row">
+	<div class="col-md-offset-1 col-md-10 col-lg-offset-1 col-lg-10">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<span><b>Settings</b></span>
 			</div>
-			<table class="table table-condensed">
-				<tr>
-					<td width="30%">Blog title</td>
-					<td>
-						<input type="text" class="form-control" id="blog_title" name="blog_title" value="{{config.blog_title}}" placeholder="Blog title"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Blog description</td>
-					<td>
-						<textarea class="form-control" rows="3" id="blog_description" name="blog_description">{{config.blog_description}}</textarea>
-					</td>
-				</tr>
-				<tr>
-					<td>Blog email address</td>
-					<td>
-						<input type="email" class="form-control" id="blog_email" name="blog_email" value="{{config.blog_email}}" placeholder="Blog email address"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Posts per page</td>
-					<td>
-						<input type="text" class="form-control" id="blog_posts_per_page" name="blog_posts_per_page" value="{{config.blog_posts_per_page}}" placeholder="Blog posts per page"/>
-					</td>
-				</tr>
-				<tr>
-					<td>Pagination links - limit previous and next links</td>
-					<td>
-						<input type="text" class="form-control" id="blog_pagination_links" name="blog_pagination_links" value="{{config.blog_pagination_links}}" placeholder="Pagination link limit"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Google Analytics
-					</td>
-					<td>
-						<textarea class="form-control" rows="3" id="blog_google_analytics" name="blog_google_analytics">{{config.blog_google_analytics}}</textarea>
-					</td>
-				</tr>
-				<tr>
-					<td>Theme</td>
-					<td>
-						<select name="blog_theme" id="blog_theme">
-						{{#each themes}}
-								<option value="{{this}}" {{#ifCond this '===' ../config.blog_theme}}selected{{/ifCond}}>{{this}}</option>
-						{{/each}}
-						</select>
-						
-					</td>
-				</tr>
-				<tr>
-					<td>Blog logo</td>
-					<td>
-						<input type="file" name="blog_logo" value="{{config.blog_logo}}" id="blog_logo"/>
-						{{#if config.blog_logo}}					
-							<img src="data:image/png;base64,{{config.blog_logo}}" width="60px" height="60px"><br/><br/>
-						{{/if}}
-						<button type="button" id="clear_logo" class="btn btn-danger">Clear logo</button>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<span class="pull-right"><button type="submit" id="save_settings" class="btn btn-primary">Save <span class="glyphicon glyphicon-floppy-disk"></span></button></span>
-					</td>
-				</tr>
-			</table>
+			<div class="panel-body">
+				<div class="col-md-offset-1 col-md-10 col-lg-offset-1 col-lg-10">
+					<form role="form" method="post" action="/admin/savesettings" name="settings_form" enctype="multipart/form-data">
+						<input type="hidden" name="frm_users_id" id="frm_users_id" value="{{user.0._id}}"/>
+						<div class="form-group">
+							<label for="blog_title">Blog title</label>
+							<input type="text" class="form-control" id="blog_title" name="blog_title" value="{{config.blog_title}}" placeholder="Blog title"/>
+						</div>
+						<div class="form-group">
+							<label for="blog_description">Blog description</label>
+							<textarea class="form-control" rows="2" id="blog_description" name="blog_description">{{config.blog_description}}</textarea>
+						</div>			
+						<div class="form-group">
+							<label for="blog_email">Blog email address</label>
+							<input type="email" class="form-control" id="blog_email" name="blog_email" value="{{config.blog_email}}" placeholder="Blog email address"/>
+						</div>	
+						<div class="form-group">
+							<label for="blog_posts_per_page">Posts per page</label>
+							<input type="number" min="1" max="50" class="form-control" id="blog_posts_per_page" name="blog_posts_per_page" value="{{config.blog_posts_per_page}}" placeholder="Blog posts per page"/>
+						</div>						
+						<div class="form-group">
+							<label for="blog_pagination_links">Pagination links - limit previous and next links</label>
+							<input type="number" min="1" max="15" class="form-control" id="blog_pagination_links" name="blog_pagination_links" value="{{config.blog_pagination_links}}" placeholder="Pagination link limit"/>
+						</div>
+						<div class="form-group">
+							<label for="blog_google_analytics">Google Analytics code</label>
+							<textarea class="form-control" rows="2" id="blog_google_analytics" name="blog_google_analytics">{{config.blog_google_analytics}}</textarea>
+						</div>
+						<div class="form-group">
+							<label for="blog_theme">Blog theme</label>
+							<select class="form-control" name="blog_theme" id="blog_theme">
+							{{#each themes}}
+									<option value="{{this}}" {{#ifCond this '===' ../config.blog_theme}}selected{{/ifCond}}>{{this}}</option>
+							{{/each}}
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="blog_logo">Blog Logo</label>
+							<input type="file" name="blog_logo" value="{{config.blog_logo}}" id="blog_logo"/>
+							{{#if config.blog_logo}}					
+								<img src="data:image/png;base64,{{config.blog_logo}}" width="60px" height="60px"><br/><br/>
+							{{/if}}
+							<button type="button" id="clear_logo" class="btn btn-danger btn-sm">Clear Blog Logo</button>
+						</div>
+						<button type="submit" id="save_settings" class="btn btn-success">Save</button>						
+					</form>
+				</div>
+			</div>
 		</div>
-	</form>
+	</div>
 </div>

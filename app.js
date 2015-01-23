@@ -49,6 +49,7 @@ handlebars = handlebars.create({
 			condensed_date: function (date) { return moment(date).format("DD/MM/YYYY"); },
 			website_title: function () { return config.website_title; },
 			post_status_text: function (status) { if(status === '0'){ return "Draft";}else{ return "Published" }},
+			post_status_class: function (status) { if(status === '0'){ return "danger";}else{ return "success" }},
 			get_tag_array: function (tags) {var tags = tags.split(',');var tags_array = [];for(var tag in tags){if(tags[tag].trim() != ""){tags_array.push(tags[tag].trim());}}return tags_array;},
 			times: function (n, block) {var accum = '';for(var i = 1; i < n; ++i)accum += block.fn(i);return accum;}, 
 			url_encode: function (url){ url = url.replace(/ /g,"-"); url = url.replace(/#/g,""); return url},

@@ -4,7 +4,7 @@
 			errorClass: "has-error",
 			rules: {
 				frm_users_name: {
-					minlength: 5,
+					minlength: 4,
 					required: true
 				},
 				frm_email1: {
@@ -24,6 +24,14 @@
 					required: true,
 					minlength: 6,
 					equalTo: "#frm_password"
+				}
+				blog_posts_per_page: {
+					required: true,
+					number: true					
+				}
+				blog_pagination_links{
+					required: true,
+					number: true	
 				}
 			},
 			messages: {
@@ -48,6 +56,12 @@
 					required: "Please provide an password",
 					minlength: "Your password must be at least 6 characters long",
 					equalTo: "Please enter the same password as above"
+				}
+				blog_posts_per_page: {
+					required: "Please provide a number of posts per page"
+				}
+				blog_pagination_links: {
+					required: "Please provide a number of pagination links either side of current"
 				}
 			}
 		});

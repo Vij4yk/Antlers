@@ -89,7 +89,7 @@ a.post_title{
 }
 
 .navbar .container { height: 2em; }
-.header_bar { background-color: #333; padding-bottom: 1em; color: white;}
+.header_bar { background-color: #333; padding-bottom: 1em; padding-top: 1em; color: white;}
 .blog_head_link { color: white; text-decoration:none;}
 .blog_head_link:hover { color: white; text-decoration:none;}
 .edit-pencil{color: #999999;}

@@ -10,19 +10,6 @@
 	<div class="row">
 		{{{this.post_body}}}
 	</div>
-	<div class="text-center">
-		<div class="social">
-			<span class="twitter">
-				<a href="http://twitter.com/share" class="twitter-share-button" data-url="{{../base_url}}/{{url_encode this.post_title}}">Tweet</a>
-			</span>
-			<span class="google">
-				<g:plusone size="medium" href="{{../base_url}}/{{url_encode this.post_title}}"></g:plusone>
-			</span>
-			<span class="Facebook">
-				<iframe src="https://www.facebook.com/plugins/like.php?href={{../base_url}}/{{url_encode this.post_title}}&show_faces=false&layout=button_count" scrolling="no" frameborder="0" style="height: 21px; width: 100px" allowTransparency="true"></iframe>
-			</span>
-		</div>
-	</div>
 	<div class="row" style="padding-top: 30px;">
 		<p class="pull-left">
 			{{#each this.post_tags}}

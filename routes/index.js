@@ -77,6 +77,8 @@ router.get('*', function(req, res) {
 									});
 			}else{
 				// no record is found so we render a 404
+				app.locals.layout = "error_layout.hbs";
+				app.locals.settings.views = __dirname + "../../views/";		
 				res.status(404).render('404', { title: '404 Not found' });
 			}
 		});
@@ -123,11 +125,11 @@ function get_all_posts(req, res, posts_per_page) {
 	// holds the pagination array which is displayed in the view
 	var pagination_array = [];
 	
-	db.posts.find({post_date: {$lte: moment()},post_status: '1', post_static_page: 'off'}).exec(function(err, post_count) {
+	db.posts.find({post_date: {$lt: moment()["_d"]},post_status: '1', post_static_page: 'off'}).exec(function(err, post_count) {
 		var start_page = (current_page - 1) * posts_per_page;
 		var total_pages = Math.ceil(post_count.length / posts_per_page);
 		
-		db.posts.find({post_date: {$lte: moment()},post_status: '1', post_static_page: 'off'}).skip(start_page).limit(posts_per_page).sort({ post_date: -1 }).exec(function(err, posts) {
+		db.posts.find({post_date: {$lt: moment()},post_status: '1', post_static_page: 'off'}).skip(start_page).limit(posts_per_page).sort({ post_date: -1 }).exec(function(err, posts) {
 			
 			// fix the post array
 			for (var post in posts){
