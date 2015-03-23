@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{{config.blog_title}}</title>
+		{{#if config.blog_title}}
+			<title>{{config.blog_title}}</title>
+		{{else}}
+			<title>Antlers blog</title>
+		{{/if}}
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="{{config.blog_description}}">
 		<meta name="robots" content="index,follow">
@@ -23,6 +27,7 @@
 				responsive_image("#body_section img");
 			});
 		</script>
+		<!-- Google analytics -->
 		{{#if config.blog_google_analytics}}
 			{{{config.blog_google_analytics}}}
 		{{/if}}
@@ -39,6 +44,17 @@
 								<img src="/themes/{{theme}}/images/default_logo.jpg" width="150px">
 							{{/if}}
 						</a>
+					</div>
+					<div class="text-center">
+						<ul class="list-inline navigation_menu">
+							{{#each navigation}}
+								<li>
+									<a href="{{this.nav_link}}">{{this.nav_menu}}</a>
+									
+								</li>
+								<li class="navigation_menu_seporator"></li>
+							{{/each}}
+						</ul>
 					</div>
 					{{{body}}}
 					<div class="text-center">

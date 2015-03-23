@@ -1,5 +1,12 @@
 (function ( $ ) {
 	$.fn.user_validation = function(options) {
+		
+		// Only require password on the new user form
+		var required_password = false;
+		if($('.panel-heading').text().trim() == "New user"){
+			required_password = true;
+		}
+	
 		$(options).validate({
 			errorClass: "has-error",
 			rules: {
@@ -17,19 +24,19 @@
 					equalTo: "#frm_email1"
 				},
 				frm_password: {
-					required: true,
+					required: required_password,
 					minlength: 6
 				},
 				frm_password_confirm: {
-					required: true,
+					required: required_password,
 					minlength: 6,
 					equalTo: "#frm_password"
-				}
+				},
 				blog_posts_per_page: {
 					required: true,
 					number: true					
-				}
-				blog_pagination_links{
+				},
+				blog_pagination_links: {
 					required: true,
 					number: true	
 				}
@@ -56,10 +63,10 @@
 					required: "Please provide an password",
 					minlength: "Your password must be at least 6 characters long",
 					equalTo: "Please enter the same password as above"
-				}
+				},
 				blog_posts_per_page: {
 					required: "Please provide a number of posts per page"
-				}
+				},
 				blog_pagination_links: {
 					required: "Please provide a number of pagination links either side of current"
 				}

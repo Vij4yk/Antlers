@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('static-favicon');
+var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -17,12 +17,15 @@ var index_configurator = require('configurator').get_config();
 var multer = require('multer');
 var node_pagination = require('pagination');
 var string = require('string');
+var fs = require('fs');
 
 // load the db
 var db = new nedb();
 db = {};
 db.posts = new nedb({ filename: 'data/posts.db', autoload: true });
 db.users = new nedb({ filename: 'data/users.db', autoload: true });
+db.media = new nedb({ filename: 'data/media.db', autoload: true });
+db.navigation = new nedb({ filename: 'data/navigation.db', autoload: true });
 
 // markdown stuff
 marked.setOptions({
@@ -57,6 +60,8 @@ handlebars = handlebars.create({
 				switch (operator) {
 					case '==':
 						return (v1 == v2) ? options.fn(this) : options.inverse(this);
+					case '!=':
+						return (v1 != v2) ? options.fn(this) : options.inverse(this);
 					case '===':
 						return (v1 === v2) ? options.fn(this) : options.inverse(this);
 					case '<':
@@ -80,15 +85,15 @@ handlebars = handlebars.create({
 
 // environment setup
 app.set('port', process.env.PORT || 3000);
-app.use(favicon());
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(multer({ dest: './public/tmp/'}))
 app.use(bodyParser.urlencoded())
-app.use(cookieParser('secretString'));
+app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
-				expires: new Date(Date.now() + 60 * 10000), 
-				maxAge: 60*10000
-				}));
+	expires: new Date(Date.now() + 60 * 10000), 
+	maxAge: 60*10000
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Make stuff accessible to our router

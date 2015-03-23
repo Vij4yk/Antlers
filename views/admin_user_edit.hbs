@@ -16,10 +16,10 @@
 			</div>
 			<div class="panel-body">
 				<div class="col-md-offset-1 col-md-8 col-lg-offset-1 col-lg-8">
-					<form role="form" autocomplete="off" id="user_form" method="post" action="/admin/user/action_{{function}}">
+					<form role="form" autocomplete="off" id="user_form" method="post" action="/admin/user/action_edit">
+						<input type="password" style="display: none;" id="password-breaker" />
 						<input type="hidden" name="frm_users_id" id="frm_users_id" value="{{user._id}}"/>
-						<input type="hidden" name="frm_return_url" value="/admin/users/current"/>
-						
+						<input type="hidden" name="frm_return_url" value="/admin/user/edit/{{user._id}}"/>
 						<div class="form-group">
 							<label for="frm_users_name">Enter Name *</label>
 							<input type="text" class="form-control" name="frm_users_name" id="frm_users_name" value="{{user.user_name}}" placeholder="Enter Name" required>
@@ -40,18 +40,13 @@
 							<label for="frm_password">Confirm Password</label>
 							<input type="password" name="frm_password_confirm" id="frm_password_confirm" class="form-control" required>
 						</div>
-						{{#if user}}
-							<div class="form-group">
-								<p>Role:{{#ifCond user.is_admin '===' true}} Admin {{/ifCond}}{{#ifCond user.is_admin '===' false}} User {{/ifCond}}</p>
-							</div>
-						{{else}}
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="frm_is_admin" id="frm_is_admin"> Is admin?
-								</label>
-							</div>	
-						{{/if}}
-						<button type="submit" id="save_settings" class="btn btn-success">{{submit_text}}</button>				
+						<p>Role: {{user.is_admin}} </p>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="frm_is_admin" id="frm_is_admin"> Is admin?
+							</label>
+						</div>	
+						<button type="submit" id="save_settings" class="btn btn-success">Save user</button>				
 					</form>
 				</div>
 			</div>

@@ -18,7 +18,10 @@ router.get('*', function(req, res) {
 	var posts_per_page = index_configurator.blog_posts_per_page;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme.trim();
+	var theme = index_configurator.blog_theme;
+	if(theme == undefined){
+		theme = "default";
+	}
 	
 	// if the posts per page is not an integer we use 5 as default
 	if(isInt(posts_per_page) == false)
@@ -60,21 +63,24 @@ router.get('*', function(req, res) {
 					app.locals.layout = "../../public/themes/" + theme + "/layouts/layout.hbs";
 				}
 				
-				res.render(view_type, {
-										"post_body": post_body, 
-										"config": index_configurator, 
-										"post_title": post_title,
-										"post_date": post_date,
-										"post_owner": post_owner,
-										"meta_description": string(post_body.substring(0, 150)).stripTags().s,
-										"post_id": post_id,
-										"post_tags": helpers.get_tag_array(post_tags),
-										"post_tags_meta": post_tags,
-										helpers: helpers,
-										"is_logged_on": is_logged_on(req),
-										theme: theme,
-										full_url: req.protocol + '://' + req.get('host') + req.originalUrl
-									});
+				db.navigation.find({}).sort({nav_order: 1}).exec(function (err, navigation) {
+					res.render(view_type, {
+						"post_body": post_body, 
+						"config": index_configurator, 
+						"post_title": post_title,
+						"post_date": post_date,
+						"post_owner": post_owner,
+						"meta_description": string(post_body.substring(0, 150)).stripTags().s,
+						"post_id": post_id,
+						"post_tags": helpers.get_tag_array(post_tags),
+						"post_tags_meta": post_tags,
+						helpers: helpers,
+						"is_logged_on": is_logged_on(req),
+						theme: theme,
+						full_url: req.protocol + '://' + req.get('host') + req.originalUrl,
+						navigation: navigation
+					});
+				});
 			}else{
 				// no record is found so we render a 404
 				app.locals.layout = "error_layout.hbs";
@@ -97,7 +103,6 @@ function isInt(value) {
 }
 
 function get_all_posts(req, res, posts_per_page) {
-	
 	var db = req.db;
 	var marked = req.marked;
 	var app = req.app;
@@ -115,7 +120,10 @@ function get_all_posts(req, res, posts_per_page) {
 	var max_pagination_links = index_configurator.blog_pagination_links;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme.trim();
+	var theme = index_configurator.blog_theme;
+	if(theme == undefined){
+		theme = "default";
+	}
 	
 	// if the posts per page is not an integer we use 5 as default
 	if(isInt(posts_per_page) == false){
@@ -150,17 +158,20 @@ function get_all_posts(req, res, posts_per_page) {
 			app.locals.settings.views = __dirname + "/../public/themes/" + theme + "/views/";
 			
 			// render the page
-			res.render('index', { 
-									"config": index_configurator, 
-									"posts": posts, 
-									helpers: helpers, 
-									"total_pages": total_pages, 
-									"pagination_array": pagination_array, 
-									"is_logged_on": is_logged_on(req),
-									theme: theme,
-									base_url: req.protocol + "://" + req.headers.host,
-									full_url: req.protocol + '://' + req.get('host') + req.originalUrl
-								});
+			db.navigation.find({}).sort({nav_order: 1}).exec(function (err, navigation) {
+				res.render('index', { 
+					"config": index_configurator, 
+					"posts": posts, 
+					helpers: helpers, 
+					"total_pages": total_pages, 
+					"pagination_array": pagination_array, 
+					"is_logged_on": is_logged_on(req),
+					theme: theme,
+					base_url: req.protocol + "://" + req.headers.host,
+					full_url: req.protocol + '://' + req.get('host') + req.originalUrl,
+					navigation: navigation
+				});
+			});
 		});
 	});
 }

@@ -36,6 +36,8 @@ $(function() {
 			formatTime:'H:i',
 			format: 'd/m/Y H:i',
 		});
+		
+		$( '.swipebox' ).swipebox();
 			
 		// makes the table rows clickable and link to the respective page
 		$(".dashboard_list").click(function() {
@@ -68,8 +70,39 @@ $(function() {
 		});
 		
 		// adds the markdown editor
-		$("#frm_post_body").markdown();
+		var windowsize = $(window).width();
+		var hidden_buttons = ["cmdCode", "cmdQuote"];
+		if(windowsize < 768){
+			$("#frm_post_body").markdown({autofocus:true, iconlibrary: "fa", hiddenButtons: hidden_buttons});
+		}else{
+			$("#frm_post_body").markdown({autofocus:true, iconlibrary: "fa",
+		
+			additionalButtons: [
+			    [{
+			          name: "groupCustom",
+			          data: [{
+			            name: "cmdBeer",
+			            toggle: true, // this param only take effect if you load bootstrap.js
+			            title: "Insert image",
+			            icon: "glyphicon glyphicon-glass",
+			            callback: function(e){
+			              // Give random drink
+						  var chunk = "test1";
+
+			              // transform selection and set the cursor into chunked text
+			              e.replaceSelection(chunk);
+			            }
+			          }]
+			    }]
+			  ]
+		  	}
+			);
+		}
 	});
+	
+	function show_modal(){
+		alert("test");
+	}
 	
     var url = window.location;
     var element = $('ul.nav a').filter(function() {

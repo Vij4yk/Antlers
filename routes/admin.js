@@ -1,28 +1,55 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', restrict, function(req, res) {
+// the default admin route. Checks if has been setup and redirects accordingly
+router.get('/', function(req, res) {
 	var db = req.db;
+	var fs = require('fs');
+	var app = req.app;
 	
-	res.redirect('/admin/dashboard/');
-})
-
-router.get('/media', restrict, function(req, res) {
-	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.layout = "admin_login_layout.hbs";
+	app.locals.settings.views = "views";	
 	
-	res.render('admin_media');
+	fs.exists("config.txt", function(exists) {
+		if (exists) {
+			res.redirect('/admin/posts');
+		} else {
+			res.redirect('/admin/setup');
+		}
+	});
+});
+
+// shows the setup form to do the initial setup of the blog
+router.get('/setup', function(req, res) {
+	var app = req.app;
+	var fs = require('fs');
+	
+	// don't allow the setup view if a config file already exists
+	fs.exists("config.txt", function(exists) {
+		if (exists) {
+			res.redirect('/admin/posts');
+		} else {
+			app.locals.layout = "admin_login_layout.hbs";
+			app.locals.settings.views = "views";	
+			
+			res.render('admin_setup', { 
+				title: 'Antlers - setup' 
+			});
+		}
+	});
+});
+
+// calls the post render list
+router.get('/posts', restrict, function(req, res) {
+	render_postlist(req, res);
 })
 
-router.get('/dashboard', restrict, function(req, res) {
-	render_dashboard(req, res);
-})
-
-function render_dashboard(req, res){
+// render the list of posts
+function render_postlist(req, res){
 	var db = req.db;
 	var app = req.app;
 	var sess = req.session;
+	var path = require('path');
 	var configurator = req.configurator.get_config();
 	var helpers = req.handlebars.helpers;
 	var message = "";
@@ -42,21 +69,23 @@ function render_dashboard(req, res){
 	
 	// override the default layout and view directory
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";
 	
 	db.posts.find({}).sort({post_date: -1}).exec(function (err, post_list) {
-		res.render('admin_dashboard', { 
-						"config": configurator, 
-						title: 'Admin - Posts', 
-						"posts": post_list,
-						"post_count": post_list.length,
-						helpers: helpers,
-						"message": message, 
-						"message_type": message_type, 
-					});
+		res.render('admin_postlist', { 
+			"config": configurator, 
+			title: 'Admin - Posts', 
+			"posts": post_list,
+			"post_count": post_list.length,
+			helpers: helpers,
+			"message": message, 
+			"message_type": message_type, 
+			"session": req.session
+		});
 	});
 }
 
+// previews the post before editing
 router.get('/preview/:id', restrict, function(req, res) {
 	var db = req.db;
 	var sess = req.session;
@@ -71,62 +100,106 @@ router.get('/preview/:id', restrict, function(req, res) {
 	// get local vars from session
 	var sess_array = get_session_array(sess);
 	
-	db.posts.find({"post_id": Number(req.params.id)}, function (err, post) {
-		if(post.length > 0){
-			post_title = post[0].post_title;
-			post_body = marked(post[0].post_body)
-			post_date = post[0].post_date;
-			post_tags = post[0].post_tags;
-			post_status = post[0].post_status;
-			post_static_page = post[0].post_static_page;
+	db.posts.findOne({"post_id": Number(req.params.id)}, function (err, post) {
+		if(post){
+			post_title = post.post_title;
+			post_body = marked(post.post_body)
+			post_date = post.post_date;
+			post_tags = post.post_tags;
+			post_status = post.post_status;
+			post_static_page = post.post_static_page;
 			
 			// override the default layout and view directory
 			app.locals.layout = "admin_layout.hbs";
-			app.locals.settings.views = __dirname + "../../views/";	
+			app.set('views',  __dirname + "\\..\\views\\");
 				
 			res.render('admin_preview', { 
-								"config": configurator, 
-								"header": "Edit Post", 
-								"post_id": post[0].post_id, 
-								"message": sess_array["message"], 
-								"message_type": sess_array["message_type"], 
-								"post_title": post_title, 
-								"post_body": post_body, 
-								"post_date": moment(post_date).format("DD/MM/YYYY"),
-								"post_tags": helpers.get_tag_array(post_tags), 
-								"post_status": post_status, 
-								title: 'Admin - Preview', 
-								"post_static_page": post_static_page,
-								helpers: helpers
-								});
+				"config": configurator, 
+				"header": "Edit Post", 
+				"post_id": post.post_id, 
+				"message": sess_array["message"], 
+				"message_type": sess_array["message_type"], 
+				"post_title": post_title, 
+				"post_body": post_body, 
+				"post_date": moment(post_date).format("DD/MM/YYYY"),
+				"post_tags": helpers.get_tag_array(post_tags), 
+				"post_status": post_status, 
+				title: 'Admin - Preview', 
+				"post_static_page": post_static_page,
+				helpers: helpers
+			});
 		}else{
 			req.session.message = "Post ID not found";
 			req.session.message_type = "danger";
-			res.redirect('/admin/dashboard');
+			res.redirect('/admin/posts');
 		}
 	});
 });
 
-router.get('/users/new', function(req, res) {
+// Shows the form to edit a specific user
+router.get('/user/edit/:id', restrict, function(req, res) {
+	var app = req.app;
+	var db = req.db;
+	var configurator = req.configurator.get_config();
+	
+	// override the default layout
+	app.locals.layout = "admin_layout.hbs";
+	app.locals.settings.views = "views";
+	
+    db.users.findOne({_id: req.params.id}, function (err, user) {
+		res.render('admin_user_edit',{
+			"config": configurator, 
+			title: 'Admin - Edit user',
+			helpers: req.handlebars.helpers,
+			"session": req.session,
+			"user": user
+		});
+	});
+});
+
+// shows the list of current users
+router.get('/users/current', restrict, function(req, res) {
+	var app = req.app;
+	var db = req.db;
+	var configurator = req.configurator.get_config();
+	
+	// override the default layout
+	app.locals.layout = "admin_layout.hbs";
+	app.locals.settings.views = "views";
+	
+	db.users.find({}).exec(function (err, users) {
+		res.render('admin_users_current',{
+			"config": configurator, 
+			title: 'Admin - Current users',
+			helpers: req.handlebars.helpers,
+			"session": req.session,
+			"users": users
+		});
+	});
+});
+
+// render the new user screen with all fields blank
+router.get('/users/new', restrict, function(req, res) {
 	var app = req.app;
 	var configurator = req.configurator.get_config();
 	var db = req.db;
 	var message = "";
 	var message_type = "";
-	// overide the default layout
+	// override the default layout
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";
 	
-	res.render('admin_users',
-				{
-					"config": configurator, 
-					"message": message,
-					"message_type": message_type,
-					title: 'Admin-Users',
-					'function': 'new',
-					'panel_title': 'New user',
-					'submit_text': 'Add user'
-				});
+	res.render('admin_users',{
+		"config": configurator, 
+		"message": message,
+		"message_type": message_type,
+		title: 'Admin - Users',
+		helpers: req.handlebars.helpers,
+		'function': 'new',
+		'panel_title': 'New user',
+		'submit_text': 'Add user',
+		"session": req.session
+	});
 });
 
 router.get('/users', restrict, function(req, res) {
@@ -136,22 +209,23 @@ router.get('/users', restrict, function(req, res) {
 	var message = "";
 	var message_type = "";
 	
-	// overide the default layout
+	// override the default layout
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";
 
-	db.users.find({user_email: req.session.user}).exec(function (err, user) {
-		res.render('admin_users',
-					{
-						"config": configurator, 
-						"message": message,
-						"message_type": message_type,
-						"user": user,
-						title: 'Admin-Users',
-						'function': 'edit',
-						'panel_title': 'My account',
-						'submit_text': 'Update user'
-					});
+	db.users.findOne({user_email: req.session.user}).exec(function (err, user) {
+		res.render('admin_users',{
+			"config": configurator, 
+			"message": message,
+			"message_type": message_type,
+			"user": user,
+			title: 'Admin-Users',
+			helpers: req.handlebars.helpers,
+			'session': req.session,
+			'function': 'edit',
+			'panel_title': 'My account',
+			'submit_text': 'Update user'
+		});
 	});
 });
 
@@ -161,65 +235,122 @@ router.get('/login', function(req, res) {
 	var db = req.db;
 	var message = "";
 	var message_type = "";
-	// overide the default layout
+	
+	// override the default layout
 	app.locals.layout = "admin_login_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";	
 	 
-	// if we have a user
+	// check if a user exists. If not, go through the setup process
 	db.users.count({}, function (err, count) {
 		if(count == 0){
-			res.render('admin_signup', { "config": config, "message": "No accounts exist. Please create the initial account", "message_type": "danger", title: 'Admin - Signup' });
+			res.redirect('/admin/setup');
 		}else{
-			res.render('admin_login', { "config": config, "message": message, "message_type": message_type, title: 'Admin - Login'});
+			res.redirect('/admin/login');
 		}
 	});
 });
 
-router.post('/user/action_edit', function(req, res){
+router.post('/user/action_edit', restrict, function(req, res){
 	var db = req.db;
 	var bcrypt = req.bcrypt;
 	var users_name = req.body.frm_users_name;
 	var email_add = req.body.frm_email1;
     var password = req.body.frm_password;
     var user_id = req.body.frm_users_id;
+	var is_admin = req.body.frm_is_admin;
+	
+	if(is_admin != undefined){
+		is_admin = true;
+	}else{
+		is_admin = false;
+	}
+	
+	// create the update doc
+	var update_doc = { 
+		user_name: users_name,
+	    user_email: email_add,
+	    is_admin: is_admin
+    };
+	
+	// only update the password if it is present
+	if(password != ""){
+		update_doc["user_password"] = bcrypt.hashSync(password);
+	}
 	
 	// update the db
-	db.users.update({_id: user_id },{$set:{
-											user_name: users_name
-										   ,user_email: email_add
-										   ,user_password: bcrypt.hashSync(password)
-								    }}, function (err, numReplaced) {
+	db.users.update({_id: user_id },{$set: update_doc
+								    }, function (err, numReplaced) {
 		db.users.persistence.compactDatafile();
-		req.session.user = email_add;
 		req.session.message = "User successfully updated";
 		req.session.message_type = "success";
-		res.redirect('/admin/users/');
+		res.redirect(req.body.frm_return_url);
 	});
 });
 
-router.post('/user/action_new', function(req, res){
+router.post('/user/action_new', restrict, function(req, res){
 	var db = req.db;
 	var bcrypt = req.bcrypt;
 	var users_name = req.body.frm_users_name;
 	var email_add = req.body.frm_email1;
     var password = req.body.frm_password;
+	var is_admin = req.body.frm_is_admin;
 	
 	var doc = { user_name: users_name
 			   , user_email: email_add
 			   , user_password: bcrypt.hashSync(password)
+			   , is_admin: is_admin
 			   };
 			   
 	db.users.insert(doc, function (err, newDoc) {
 		if(err){
 			console.log(err);
 		}else{
-			// signup is successfull
-			req.session.user = email_add;
+			// sign-up is successful
 			req.session.message = "Welcome aboard";
 			req.session.message_type = "success";
 			res.redirect('/admin/users/');
 		}
 	});
+});
+
+
+
+router.post('/action_setup', function(req, res){
+	var db = req.db;
+	var bcrypt = req.bcrypt;
+	var configurator = req.configurator;
+
+	var user_doc = { user_name: req.body.full_name
+			   , user_email: req.body.email_address
+			   , user_password: bcrypt.hashSync(req.body.password)
+			   , is_admin: true
+			   };
+			   
+	db.users.insert(user_doc, function (err, new_user) {
+		if(err){
+			console.log(err);
+		}else{
+			// user account was successful so we create the config file
+			var configurator = req.configurator;
+			var config_string = "";
+			
+			// write the config file based on the input from the setup and some defaults
+			config_string = config_string + "blog_title~~" + req.body.blog_title + "\n";
+			config_string = config_string + "blog_email~~" + req.body.email_address + "\n";
+			config_string = config_string + "blog_posts_per_page~~3\n";
+			config_string = config_string + "blog_pagination_links~~2\n";
+			config_string = config_string + "blog_theme~~default\n";
+			configurator.write_config(config_string);
+			
+			req.session.user = req.body.email_address;
+			req.session.user_isadmin = "true";
+			
+			req.session.message = "Welcome aboard";
+			req.session.message_type = "success";
+			res.redirect('/admin');
+		}
+	});
+	
 });
 
 router.post('/action_login', function(req, res){
@@ -229,18 +360,19 @@ router.post('/action_login', function(req, res){
 	var email_add = req.body.email_address;
     var password = req.body.password;
 	
-	db.users.find({}).sort({user_email: email_add}).exec(function (err, users) {	
+	db.users.findOne({}).sort({user_email: email_add}).exec(function (err, users) {	
 		if(err){
 			render_login_fail(config, req, res);
 		}else{
-			if(users.length > 0){
+			if(users){
 				// we have found a user. Now we compare the hash
-				var db_hash = users[0].user_password;
-				
+				var db_hash = users.user_password;
+
 				// compare password with hash in db
 				if(bcrypt.compareSync(password, db_hash) == true){
 					req.session.regenerate(function(){
 						req.session.user = email_add;
+						req.session.user_is_admin = users.is_admin;
 						req.session.message = null;
 						req.session.message_type = null;
 						res.redirect('/admin');
@@ -262,11 +394,11 @@ router.get('/logout', function(req, res){
     });
 });	
 
-// Catch hits to "editor" and no ID supplied. Alert and redirect to dashboard
+// Catch hits to "editor" and no ID supplied. Alert and redirect to post list
 router.get('/editor', restrict, function(req, res) {
 	req.session.message = "Error: Post ID not found";
 	req.session.message_type = "danger";
-	res.redirect('/admin/dashboard/');
+	res.redirect('/admin/posts/');
 });	
 
 // New post editor
@@ -282,7 +414,7 @@ router.get('/editor/new', restrict, function(req, res) {
 	
 	// override the default layout and view directory
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";		
+	app.set('views',  __dirname + "\\..\\views\\");	
 	
 	res.render('admin_editor', 
 				{ 
@@ -296,7 +428,8 @@ router.get('/editor/new', restrict, function(req, res) {
 					"post_body": sess_array["post_body"], 
 					"post_tags": sess_array["post_tags"], 
 					title: 'Admin - New page', 
-					helpers: helpers
+					helpers: helpers,
+					'session': req.session
 				});
 });
 
@@ -315,23 +448,23 @@ router.get('/editor/:id', restrict, function(req, res) {
 	
 	// override the default layout and view directory
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.set('views',  __dirname + "\\..\\views\\");
 	
-	db.posts.find({ "post_id": Number(req.params.id) }).sort({ post_date: -1 }).exec(function (err, post){
-		if(post.length > 0){
-				post_title = post[0].post_title;
-				post_title_clean = post[0].post_title_clean;
-				post_body = post[0].post_body;
-				post_date = post[0].post_date;
-				post_tags = post[0].post_tags;
-				post_status = post[0].post_status;
-				post_static_page = post[0].post_static_page;
-				db_id = post[0]._id;
+	db.posts.findOne({ "post_id": Number(req.params.id) }).sort({ post_date: -1 }).exec(function (err, post){
+		if(post){
+				post_title = post.post_title;
+				post_title_clean = post.post_title_clean;
+				post_body = post.post_body;
+				post_date = post.post_date;
+				post_tags = post.post_tags;
+				post_status = post.post_status;
+				post_static_page = post.post_static_page;
+				db_id = post._id;
 				
-				res.render('admin_editor', { 
+				res.render('admin/admin_editor', { 
 										"config": configurator, 
 										"header": "Edit Post", 
-										"post_id": post[0].post_id, 
+										"post_id": post.post_id, 
 										"message": sess_array["message"], 
 										"message_type": sess_array["message_type"], 
 										"db_id": db_id, 
@@ -349,7 +482,7 @@ router.get('/editor/:id', restrict, function(req, res) {
 			// get all posts and show a message to advise the post ID does not exist
 			req.session.message = "Error: Post ID not supplied";
 			req.session.message_type = "danger";
-			res.redirect('/admin/dashboard');
+			res.redirect('/admin/posts');
 		}
 	});
 });
@@ -381,7 +514,7 @@ function base64_encode(file) {
 }
 
 // clears the base64 encoded image string from the settings file
-router.get('/clearlogo', function(req, res) {
+router.get('/clearlogo', restrict, function(req, res) {
 	var configurator = req.configurator;
 	var config_array = configurator.get_config();
 	var config_string = "";
@@ -405,7 +538,7 @@ router.get('/clearlogo', function(req, res) {
 });
 
 // render the settings view
-router.post('/savesettings', function(req, res) {
+router.post('/savesettings', restrict, function(req, res) {
 	var configurator = req.configurator;
 	var fs = require('fs');
 	var sess = req.session;
@@ -478,20 +611,198 @@ router.get('/settings', restrict, function(req, res) {
 	
 	// override the default layout and view directory
 	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";
 	
 	res.render('admin_settings', { 
-									"config": configurator, 
-									title: 'Admin - Settings', 
-									"message": sess_array["message"], 
-									"message_type": sess_array["message_type"], 
-									"themes": themes,
-									helpers: helpers
-								});
+		"config": configurator, 
+		title: 'Admin - Settings', 
+		"message": sess_array["message"], 
+		"message_type": sess_array["message_type"], 
+		"themes": themes,
+		helpers: helpers,
+		'session': req.session
+	});
+});
+
+// render the settings view
+router.get('/navigation', restrict, function(req, res) {
+	var app = req.app;
+	var db = req.db;
+	var configurator = req.configurator.get_config();
+	var sess = req.session;
+	var helpers = req.handlebars.helpers;
+	var sess_array = get_session_array(sess);
+	
+	// override the default layout and view directory
+	app.locals.layout = "admin_layout.hbs";
+	app.locals.settings.views = "views";
+	
+	// get the navigation links from the db ordering by the "nav_order" field
+	db.navigation.find({}).sort({ "nav_order": 1 }).exec(function (err, navigation){
+		res.render('admin_navigation', { 
+				"config": configurator, 
+				title: 'Admin - Navigation', 
+				"message": sess_array["message"], 
+				"message_type": sess_array["message_type"], 
+				helpers: helpers,
+				"session": req.session,
+				navigation: navigation
+		});
+	});
+});
+
+// This adds a new navigation menu item
+router.post('/navigation_add_new', restrict, function(req, res) {
+	var db = req.db;
+	
+	db.navigation.count({}, function (err, count) {
+		var new_nav = {
+			 nav_menu: req.body.nav_menu,
+			 nav_link: req.body.nav_link,
+			 nav_order: count
+		};
+
+		db.navigation.insert(new_nav, function (err, new_rec) {
+			res.redirect('/admin/navigation');
+		});
+	});
+});
+
+// This deletes and existing menu item
+router.get('/navigation/delete/:id', restrict, function(req, res) {
+	var db = req.db;
+	db.navigation.remove({ _id: req.params.id }, {}, function (err, numRemoved) {
+		res.redirect('/admin/navigation');
+	});
+});
+
+// this saves the values of an existing navigation menu. Eg: Update the menu title or the URL location
+router.post('/navigation_save_values', restrict, function(req, res) {
+	var db = req.db;
+	var nav_id = req.body.nav_id;
+	var nav_menu = req.body.nav_menu;
+	var nav_link = req.body.nav_link;
+
+	db.navigation.update({_id: nav_id},{$set:{
+			nav_menu: nav_menu,
+			nav_link: nav_link
+		}}, function (err, numReplaced) {
+			res.redirect('/admin/navigation');
+	});
+});
+
+// We call this via a Ajax call to save the order from the sortable list
+router.post('/navigation_save_order', restrict, function(req, res) {
+	var db = req.db;
+	for (var i = 0; i < req.body.nav_id.length; i++) {
+		db.navigation.update({_id: req.body.nav_id[i] },{$set:{
+				nav_order: i
+			}}, function (err, numReplaced) {
+		});
+	}
+});
+
+router.get('/media', restrict, function(req, res) {
+	var app = req.app;
+	var sess = req.session;
+	var sess_array = get_session_array(sess);
+	var configurator = req.configurator.get_config();
+	var db = req.db;
+	var helpers = req.handlebars.helpers;
+	var fs = require('fs');
+	
+	// get the media from DB
+	db.media.find({}).sort({ "image_date": -1 }).exec(function (err, media){
+		
+		app.locals.layout = "admin_layout.hbs";
+		app.locals.settings.views = "views";
+		
+		res.render('admin_media', 
+		{ 
+			title: 'Admin - Media',
+			"config": configurator,
+			helpers: helpers,
+			"media": media,
+			"message": sess_array["message"], 
+			"message_type": sess_array["message_type"],
+			"session": req.session
+		});
+	});
+});
+
+// removes any media from the db and the file on disk
+router.get('/delete_media/:id', restrict, function(req, res) {
+	var db = req.db;
+	var fs = require('fs');
+	
+	db.media.findOne({_id: req.params.id}).exec(function (err, media){
+		fs.unlink('public/user_content/' + media.media_name, function (err) {
+			db.media.remove({ _id: req.params.id }, {}, function (err, numRemoved) {
+				req.session.message = "Media successfully deleted";
+				req.session.message_type = "success";
+				res.redirect('/admin/media');
+			});
+		});
+	});
+});
+
+// updates the title associated with the media object
+router.post('/edit_media', restrict, function(req, res) {
+	var db = req.db;
+	db.media.update({_id: req.body.media_id },{$set:{
+											media_title: req.body.frm_media_title
+								    }}, function (err, numReplaced) {
+		req.session.message = "Media updated";
+		req.session.message_type = "success";
+		res.redirect('/admin/media/');
+	});
+});
+
+// upload the file(s)
+router.post('/upload_media', restrict, function(req, res) {
+	var db = req.db;
+	var fs = require('fs');
+	var url = require('url') ;
+	var media_title = req.body.media_title;
+	
+	// if a file has been selected we upload it
+	if(req.files.media_upload){
+		var files = [].concat(req.files.media_upload);
+		for(var x = 0; x < files.length; x++){
+			file = files[x];
+			var source = fs.createReadStream(file.path);
+			var media_type = file.mimetype.split("/")[0];
+			var dest = fs.createWriteStream("public/user_content/" + file.originalname);
+			var media_size = Math.round(file.size / 1024) + " kb";
+			
+			var db_media = {
+			   	 media_title: media_title
+			   , media_name: file.originalname
+			   , media_url: "http://" + req.headers.host + "/user_content/" + file.originalname
+			   , media_date: new Date()
+			   , media_size: media_size
+			   , media_type: media_type
+		  	};
+
+			// insert into the DB
+		  	db.media.insert(db_media, function (err, newMedia) {});
+
+			// save the new file
+			source.pipe(dest);
+			source.on("end", function() {});
+			
+			// delete the temp file.
+			fs.unlink(file.path, function (err) {});
+		}
+		
+		req.session.message = "Media uploaded successfully";
+		req.session.message_type = "success";
+		return res.redirect('/admin/media');
+	}
 });
 
 // save the post to the DB
-router.post('/savepost', function(req, res) {
+router.post('/savepost', restrict, function(req, res) {
 	var configurator = req.configurator;
 	var db = req.db;
 	var marked = req.marked;
@@ -619,20 +930,11 @@ router.post('/savepost', function(req, res) {
 	}
 });
 
-// cleans the post title by removing any invalid characters
-function clean_post_title(title)
-{
-	title = title.replace(/ /g,"-"); // replace spaces with dashes
-	title = title.replace(/[$&+,/;:=?@"<\\>#%{}|^~\[\]']/g,""); // replace spaces with dashes
-	return title;
-}
-
 // shows the login failed message
-function render_login_fail(config, req, res)
-{
+function render_login_fail(config, req, res){
 	// overide the default layout
 	var app = req.app;
-	app.locals.settings.views = __dirname + "../../views/";	
+	app.locals.settings.views = "views";
 	app.locals.layout = "admin_login_layout.hbs";
 	
 	// set the message in the session
@@ -645,8 +947,7 @@ function render_login_fail(config, req, res)
 
 // gets the session messages, sets them to a local array and clears the session variables. This essentially
 // allows for flash messaging on the pages
-function get_session_array(sess)
-{
+function get_session_array(sess){
 	// Check if a value is in the session. If so, clear the session 
 	// value and assign to a local variable which is passed to our view
 	var sess_array = {};
@@ -685,7 +986,6 @@ function get_session_array(sess)
 
 // checks if session exists and displays "Access denied" message and redirects to login
 function restrict(req, res, next) {
-
 	if (req.session.user){
 		next();
 	}else{
@@ -712,9 +1012,17 @@ function get_all_posts(req, res, message, message_type) {
 	db.posts.find({}).sort({post_date: 1}).exec(function (err, posts) {	
 	// overide the default layout
 		app.locals.layout = "admin_layout.hbs";	
-		app.locals.settings.views = __dirname + "../../views/";	
-		res.render('admin', { "config": config, "message": message, "message_type": message_type, "posts": posts, title: 'Admin - Dashboard', helpers: helpers });
+		app.locals.settings.views = "views";
+		res.render('admin', { "config": config, "message": message, "message_type": message_type, "posts": posts, title: 'Admin - Posts', helpers: helpers, "session": req.session });
 	});
+}
+
+// cleans the post title by removing any invalid characters
+function clean_post_title(title)
+{
+	title = title.replace(/ /g,"-"); // replace spaces with dashes
+	title = title.replace(/[$&+,/;:=?@"<\\>#%{}|^~\[\]']/g,""); // replace spaces with dashes
+	return title;
 }
 
 module.exports = router;

@@ -5,7 +5,7 @@
 		</script>
 	{{/if}}	
 	<div class="col-lg-12">
-		<h1 class="page-header">Dashboard</h1>
+		<h1 class="page-header">Post list</h1>
 	</div>
 </div>
 <div class="row">
@@ -22,15 +22,20 @@
 								{{this.post_title}}
 							</td>
 							<td class="col-xs-2 pull-right">
+								<span id="dashboard_list_date" style="padding-left: 5px;" class="pull-right text-muted"><small>{{condensed_date this.post_date "YYYY-MM-DD HH:mm"}}</small></span>
 								<span class="pull-right" style="padding-left: 5px;">
-								{{#ifCond this.post_status "==" "0"}}
-									<i class="fa fa-newspaper-o text-danger"></i>
-								{{/ifCond}}
-								{{#ifCond this.post_status "==" "1"}}
-									<i class="fa fa-newspaper-o text-success"></i>
-								{{/ifCond}}
+									{{#ifCond this.post_status "==" "0"}}
+										<i class="fa fa-newspaper-o text-danger"></i>
+									{{/ifCond}}
+									{{#ifCond this.post_status "==" "1"}}
+										<i class="fa fa-newspaper-o text-success"></i>
+									{{/ifCond}}
 								</span>
-								<span id="dashboard_list_date" class="pull-right text-muted"><small>{{condensed_date this.post_date "YYYY-MM-DD HH:mm"}}</small></span>
+								<span class="pull-right" style="padding-left: 5px;">
+									{{#ifCond this.post_static_page "==" "on"}}
+										<i class="fa fa-magnet text-danger"></i>
+									{{/ifCond}}
+								</span>
 							</td>
 						</tr>
 					{{/each}}

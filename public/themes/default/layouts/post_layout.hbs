@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{{post_title}}</title>
+		{{#if config.blog_title}}
+			<title>{{config.blog_title}}</title>
+		{{else}}
+			<title>Antlers blog</title>
+		{{/if}}
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="{{meta_description}}">
 		<meta name="keywords" content="{{post_tags_meta}}">
@@ -21,7 +25,7 @@
 		<div class="navbar-fixed-top header_bar">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-7">
+					<div class="col-md-10 col-md-offset-2">
 						<a class="blog_head_link pull-left" href="/"><img src="/themes/{{theme}}/images/default_logo_inverted.png" height="90px"></a>
 					</div>
 				</div> 
@@ -30,7 +34,18 @@
 		<div class="container">
 			<div class="row"> 
 				<div class="col-md-12"> 
-					<div class="panel-body">
+					<div class="row post_body">
+						<div class="text-center">
+							<ul class="list-inline navigation_menu">
+								{{#each navigation}}
+									<li>
+										<a href="{{this.nav_link}}">{{this.nav_menu}}</a>
+										
+									</li>
+									<li class="navigation_menu_seporator"></li>
+								{{/each}}
+							</ul>
+						</div>
 						{{{body}}}
 					</div>
 				</div>

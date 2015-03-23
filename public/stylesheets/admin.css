@@ -45,6 +45,14 @@ body {
   margin-right: auto;
 }
 
+.td-pad{
+	padding-top: 10px !important;
+}
+
+#draggable_list .dragable_item {
+	cursor: move;
+}	
+
 /* SIZE (mobile/desktop) SPECIFIC SETTINGS */
 @media(min-width:768px) {
     #page-wrapper {
@@ -53,11 +61,6 @@ body {
         padding: 0px 15px;
         border-left: 1px solid #e7e7e7;
     }
-}
-
-/* collapsed sidebar styles */
-@media screen and (max-width: 767px) {
-
 }
 
 @media (max-width: 767px) {
@@ -149,6 +152,12 @@ body {
 #status_dropdown{
 	padding-top: 4px !important;
 	height: 30px;
+}
+
+.cog_menu_item{
+	text-align: center; 
+	padding-bottom: 5px; 
+	width: 110px;
 }
 
 .dropdown-toggle{

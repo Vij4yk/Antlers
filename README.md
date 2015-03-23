@@ -15,12 +15,16 @@ A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (ht
 
 ## Demo
 
-See it in action here: http://mrvautin.com/Antlers
+See it in action here: http://antlersblog.net
 
 ## Admin
 
 You can enter the admin panel of your newly created blog by visiting the following URL in your browser:
-http://localhost:3000/admin. The default user login is: test@test.com and password is: password1. After logging in, you can change the email (username) and password using the "Users" menu.
+http://localhost:3000/admin.
+
+## Documentation
+
+All documentation can be found on the Antlers blog website: http://antlersblog.net
 
 ## License
 

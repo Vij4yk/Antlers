@@ -7,7 +7,7 @@
 	<div class="col-lg-12">
 		<h1 class="page-header">Editor</h1>
 		<ol class="breadcrumb">
-		  <li><a href="/admin/dashboard">Home</a></li>
+		  <li><a href="/admin/posts">Home</a></li>
 		  {{#if post_id}}
 			<li><a href="/admin/preview/{{post_id}}">Preview</a></li>
 		  {{/if}}
@@ -27,14 +27,23 @@
 					<div id="editor_cog" class="btn-group pull-right" style="margin-top: -4px;">
 						<button type="button" class="btn btn-default dropdown-toggle glyphicon glyphicon-cog" data-toggle="dropdown">
 						</button>
-						<ul class="dropdown-menu pull-right" style="min-width: 120px;" role="menu">
+						<ul class="dropdown-menu pull-right" style="min-width: 130px;" role="menu">
 							<li>
-								<div class="center-block" style="text-align: center; padding-bottom: 5px; width: 100px;">
-									<a href="../../{{post_title_clean}}" target="_blank" class="btn btn-info btn-sm" style="width: 100%">Preview post</a>
+								<div class="center-block cog_menu_item">
+									<a href="../../{{post_title_clean}}" target="_blank" class="btn btn-info btn-sm" style="width: 100%"><i class="fa fa-search"></i>&nbsp;Preview post</a>
 								</div>
 							</li>
 							<li>
-								<button type="button" onclick="confirm_delete({{post_id}});" class="btn btn-danger btn-sm center-block" style="width: 100px;">Delete post <span class="glyphicon glyphicon-trash"></span></button>
+								<div class="center-block cog_menu_item">	
+									<button type="button" onclick="confirm_delete('/admin/deletepost/{{post_id}}');" class="btn btn-danger btn-sm" style="width: 100%;"><i class="fa fa-trash"></i> &nbsp;Delete post</button>
+								</div>
+							</li>
+							<li>
+								<div class="center-block cog_menu_item">
+									<div class="btn btn-warning btn-sm center-block">
+										<i class="fa fa-magnet"></i> &nbsp;Static post &nbsp;<input type="checkbox" name="frm_static_page" {{#ifCond post_static_page '==' 'on'}}checked{{/ifCond}} > 
+									</div>
+								</div>
 							</li>
 						</ul>
 					</div>
