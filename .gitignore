@@ -1,5 +1,9 @@
 Rubbish/*
 desktop.ini
+sitemap.xml
+config.txt
+data/users.db
+data/posts.db
 node_modules/.bin/*
 node_modules/bcrypt-nodejs/*
 node_modules/body-parser/*

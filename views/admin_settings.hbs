@@ -31,6 +31,11 @@
 							<input type="email" class="form-control" id="blog_email" name="blog_email" value="{{config.blog_email}}" placeholder="Blog email address"/>
 						</div>	
 						<div class="form-group">
+							<label for="blog_hostname">Blog hostname</label>
+							<input type="text" class="form-control" id="blog_hostname" name="blog_hostname" value="{{config.blog_hostname}}" placeholder="Blog hostname"/>
+							<p class="help-block">This field is used to generate sitemap URL's</p>
+						</div>	
+						<div class="form-group">
 							<label for="blog_posts_per_page">Posts per page</label>
 							<input type="number" min="1" max="50" class="form-control" id="blog_posts_per_page" name="blog_posts_per_page" value="{{config.blog_posts_per_page}}" placeholder="Blog posts per page"/>
 						</div>						

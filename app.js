@@ -12,10 +12,8 @@ var marked = require('marked');
 var session = require('express-session');
 var bcrypt = require('bcrypt-nodejs');
 var handlebars = require('express-handlebars');
-var configurator = require('configurator');
-var index_configurator = require('configurator').get_config();
+var antlers_functions = require('antlers');
 var multer = require('multer');
-var node_pagination = require('pagination');
 var string = require('string');
 var fs = require('fs');
 
@@ -82,7 +80,7 @@ handlebars = handlebars.create({
 			},
 		}
 });
-
+	
 // environment setup
 app.set('port', process.env.PORT || 3000);
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -99,9 +97,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make stuff accessible to our router
 app.use(function(req,res,next){
     req.db = db;
-	req.configurator = configurator;
-	req.index_configurator = index_configurator;
-	req.node_pagination = node_pagination;
+	req.antlers_functions = antlers_functions;
 	req.marked = marked;
 	req.moment = moment;
 	req.bcrypt = bcrypt;
@@ -115,6 +111,9 @@ app.use('/page/', page);
 app.use('/admin/', admin);
 app.use('/tag/', tag);
 app.use('/', routes);
+
+// write out sitemap
+antlers_functions.write_sitemap(db, antlers_functions.get_config());
 
 // catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

@@ -50,7 +50,7 @@ function render_postlist(req, res){
 	var app = req.app;
 	var sess = req.session;
 	var path = require('path');
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var helpers = req.handlebars.helpers;
 	var message = "";
 	var message_type = "";
@@ -91,7 +91,7 @@ router.get('/preview/:id', restrict, function(req, res) {
 	var sess = req.session;
 	var message = "";
 	var message_type = "";
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var app = req.app;
 	var moment = req.moment;
 	var marked = req.marked;
@@ -140,7 +140,7 @@ router.get('/preview/:id', restrict, function(req, res) {
 router.get('/user/edit/:id', restrict, function(req, res) {
 	var app = req.app;
 	var db = req.db;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	
 	// override the default layout
 	app.locals.layout = "admin_layout.hbs";
@@ -161,7 +161,7 @@ router.get('/user/edit/:id', restrict, function(req, res) {
 router.get('/users/current', restrict, function(req, res) {
 	var app = req.app;
 	var db = req.db;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	
 	// override the default layout
 	app.locals.layout = "admin_layout.hbs";
@@ -181,7 +181,7 @@ router.get('/users/current', restrict, function(req, res) {
 // render the new user screen with all fields blank
 router.get('/users/new', restrict, function(req, res) {
 	var app = req.app;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var db = req.db;
 	var message = "";
 	var message_type = "";
@@ -204,7 +204,7 @@ router.get('/users/new', restrict, function(req, res) {
 
 router.get('/users', restrict, function(req, res) {
 	var app = req.app;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var db = req.db;
 	var message = "";
 	var message_type = "";
@@ -230,7 +230,6 @@ router.get('/users', restrict, function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-	var config = req.config;
 	var app = req.app;
 	var db = req.db;
 	var message = "";
@@ -245,7 +244,7 @@ router.get('/login', function(req, res) {
 		if(count == 0){
 			res.redirect('/admin/setup');
 		}else{
-			res.redirect('/admin/login');
+			res.render('admin_login', {title: 'Admin - Login' });
 		}
 	});
 });
@@ -313,12 +312,10 @@ router.post('/user/action_new', restrict, function(req, res){
 	});
 });
 
-
-
 router.post('/action_setup', function(req, res){
 	var db = req.db;
 	var bcrypt = req.bcrypt;
-	var configurator = req.configurator;
+	var configurator = req.antlers_functions;
 
 	var user_doc = { user_name: req.body.full_name
 			   , user_email: req.body.email_address
@@ -331,16 +328,17 @@ router.post('/action_setup', function(req, res){
 			console.log(err);
 		}else{
 			// user account was successful so we create the config file
-			var configurator = req.configurator;
 			var config_string = "";
 			
 			// write the config file based on the input from the setup and some defaults
 			config_string = config_string + "blog_title~~" + req.body.blog_title + "\n";
 			config_string = config_string + "blog_email~~" + req.body.email_address + "\n";
+			config_string = config_string + "blog_hostname~~" + req.protocol + "://"  + req.headers.host + "\n";
 			config_string = config_string + "blog_posts_per_page~~3\n";
 			config_string = config_string + "blog_pagination_links~~2\n";
 			config_string = config_string + "blog_theme~~default\n";
 			configurator.write_config(config_string);
+			configurator.write_sitemap(db, configurator.get_config());
 			
 			req.session.user = req.body.email_address;
 			req.session.user_isadmin = "true";
@@ -407,7 +405,7 @@ router.get('/editor/new', restrict, function(req, res) {
 	var app = req.app;
 	var helpers = req.handlebars.helpers;
 	var moment = req.moment;
-	var configurator = req.configurator;
+	var configurator = req.antlers_functions.get_config();
 	
 	// get local vars from session
 	var sess_array = get_session_array(sess);
@@ -418,7 +416,7 @@ router.get('/editor/new', restrict, function(req, res) {
 	
 	res.render('admin_editor', 
 				{ 
-					"config": configurator.get_config(), 
+					"config": configurator, 
 					"header": "New Post", 
 					"post_id": "", 
 					"message": sess_array["message"], 
@@ -441,7 +439,7 @@ router.get('/editor/:id', restrict, function(req, res) {
 	var app = req.app;
 	var helpers = req.handlebars.helpers;
 	var moment = req.moment;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 		
 	// get local vars from session
 	var sess_array = get_session_array(sess);
@@ -461,7 +459,9 @@ router.get('/editor/:id', restrict, function(req, res) {
 				post_static_page = post.post_static_page;
 				db_id = post._id;
 				
-				res.render('admin/admin_editor', { 
+				post_static_page = "off";
+				
+				res.render('admin_editor', { 
 										"config": configurator, 
 										"header": "Edit Post", 
 										"post_id": post.post_id, 
@@ -515,7 +515,7 @@ function base64_encode(file) {
 
 // clears the base64 encoded image string from the settings file
 router.get('/clearlogo', restrict, function(req, res) {
-	var configurator = req.configurator;
+	var configurator = req.antlers_functions;
 	var config_array = configurator.get_config();
 	var config_string = "";
 	
@@ -539,10 +539,9 @@ router.get('/clearlogo', restrict, function(req, res) {
 
 // render the settings view
 router.post('/savesettings', restrict, function(req, res) {
-	var configurator = req.configurator;
+	var configurator = req.antlers_functions;
 	var fs = require('fs');
 	var sess = req.session;
-	var helpers = req.handlebars.helpers;
 	var sess_array = get_session_array(sess);
 	var config_string = "";
 	
@@ -601,7 +600,7 @@ router.post('/savesettings', restrict, function(req, res) {
 router.get('/settings', restrict, function(req, res) {
 	var app = req.app;
 	var fs = require('fs');
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var sess = req.session;
 	var helpers = req.handlebars.helpers;
 	var sess_array = get_session_array(sess);
@@ -628,7 +627,7 @@ router.get('/settings', restrict, function(req, res) {
 router.get('/navigation', restrict, function(req, res) {
 	var app = req.app;
 	var db = req.db;
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var sess = req.session;
 	var helpers = req.handlebars.helpers;
 	var sess_array = get_session_array(sess);
@@ -706,7 +705,7 @@ router.get('/media', restrict, function(req, res) {
 	var app = req.app;
 	var sess = req.session;
 	var sess_array = get_session_array(sess);
-	var configurator = req.configurator.get_config();
+	var configurator = req.antlers_functions.get_config();
 	var db = req.db;
 	var helpers = req.handlebars.helpers;
 	var fs = require('fs');
@@ -942,7 +941,7 @@ function render_login_fail(config, req, res){
 	req.session.message_type = "danger";
 
 	// render our view	
-	res.render('admin_login', { "config": config, "message": req.session.message, "message_type": req.session.message_type, title: 'Admin - Login' });
+	res.render('admin_login', {"message": req.session.message, "message_type": req.session.message_type, title: 'Admin - Login' });
 }
 
 // gets the session messages, sets them to a local array and clears the session variables. This essentially
@@ -1005,7 +1004,7 @@ function getExtension(filename) {
 function get_all_posts(req, res, message, message_type) {
 	var db = req.db;
 	var app = req.app;
-	var config = req.config;
+	var config = req.antlers_functions.get_config();
 	var marked = req.marked;
 	var helpers = req.handlebars.helpers;
 			

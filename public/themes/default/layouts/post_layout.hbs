@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		{{#if config.blog_title}}
-			<title>{{config.blog_title}}</title>
-		{{else}}
-			<title>Antlers blog</title>
-		{{/if}}
+		<title>{{post_title}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="{{meta_description}}">
 		<meta name="keywords" content="{{post_tags_meta}}">
@@ -13,6 +9,7 @@
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap-theme.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/style.css' />
+		<link rel="stylesheet" href="/themes/{{theme}}/css/prettify.css">
 		<link rel="shortcut icon" href="/themes/{{theme}}/favicon.ico" />
 		<!-- Open Graph meta -->
 		<meta property="og:title" content="{{post_title}}"/>
@@ -51,6 +48,10 @@
 				</div>
 			</div>
 		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="/themes/{{theme}}/js/bootstrap.min.js"></script>
+		<script src="/javascripts/bootstrap-responsive_img.js"></script>
+		<script src="/themes/{{theme}}/js/prettify.js"></script>
+		<script src="/themes/{{theme}}/js/func.js"></script>
 	</body>
 </html>

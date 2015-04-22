@@ -10,15 +10,18 @@ router.get('*', function(req, res) {
 	var full_url = req.url;
 	var helpers = req.handlebars.helpers;
 	var post_title = url.parse(req.url).pathname.substring(1);
-	var index_configurator = req.index_configurator;
 	var app = req.app;	
+	var antlers_functions = req.antlers_functions;
 	var string = req.string;
 	
+	// get the config
+	var config = antlers_functions.get_config();
+	
 	// get posts per page config value
-	var posts_per_page = index_configurator.blog_posts_per_page;
+	var posts_per_page = config.blog_posts_per_page;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme;
+	var theme = config.blog_theme;
 	if(theme == undefined){
 		theme = "default";
 	}
@@ -43,8 +46,7 @@ router.get('*', function(req, res) {
 		$post_title: post_title,
 	};
 	
-	if(post_title.length > 1)
-	{				
+	if(post_title.length > 1){				
 		// get the data from the DB 
 		db.posts.find({post_title_clean: post_title}, function (err, post) {		
 			if(post.length > 0){
@@ -66,7 +68,7 @@ router.get('*', function(req, res) {
 				db.navigation.find({}).sort({nav_order: 1}).exec(function (err, navigation) {
 					res.render(view_type, {
 						"post_body": post_body, 
-						"config": index_configurator, 
+						"config": config, 
 						"post_title": post_title,
 						"post_date": post_date,
 						"post_owner": post_owner,
@@ -107,20 +109,22 @@ function get_all_posts(req, res, posts_per_page) {
 	var marked = req.marked;
 	var app = req.app;
 	var moment = req.moment;
-	var node_pagination = req.node_pagination;
+	var antlers_functions = req.antlers_functions;
 	var helpers = req.handlebars.helpers;
-	var index_configurator = req.index_configurator;
 	var current_page = 1;
 	
+	// get the configs
+	var config = antlers_functions.get_config();
+	
 	// get posts per page config value
-	var posts_per_page = index_configurator.blog_posts_per_page;
+	var posts_per_page = config.blog_posts_per_page;
 	
 	// get the limit of pagination links either side of the current page. 
 	// ensures lots of pages doesn't create excessive pagination numbered links
-	var max_pagination_links = index_configurator.blog_pagination_links;
+	var max_pagination_links = config.blog_pagination_links;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme;
+	var theme = config.blog_theme;
 	if(theme == undefined){
 		theme = "default";
 	}
@@ -146,7 +150,7 @@ function get_all_posts(req, res, posts_per_page) {
 			}
 		
 			// get the pagination array
-			pagination_array = node_pagination.get_html(total_pages, current_page, max_pagination_links, posts_per_page);
+			pagination_array = antlers_functions.get_pagination_html(total_pages, current_page, max_pagination_links, posts_per_page);
 			
 			// override the default layout
 			if(theme == ""){
@@ -160,7 +164,7 @@ function get_all_posts(req, res, posts_per_page) {
 			// render the page
 			db.navigation.find({}).sort({nav_order: 1}).exec(function (err, navigation) {
 				res.render('index', { 
-					"config": index_configurator, 
+					"config": config, 
 					"posts": posts, 
 					helpers: helpers, 
 					"total_pages": total_pages, 

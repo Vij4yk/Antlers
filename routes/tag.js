@@ -12,7 +12,7 @@ router.get('/:tag', function(req, res) {
 
 function get_all_posts(req, res, tag) {
 	var db = req.db;
-	var config = req.configurator.get_config();
+	var config = req.antlers_functions.get_config();
 	var marked = req.marked;
 	var app = req.app;
 	var helpers = req.handlebars.helpers;	

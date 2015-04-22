@@ -17,18 +17,18 @@ router.get('/:id', function(req, res) {
 	var app = req.app;
 	var node_pagination = req.node_pagination;
 	var helpers = req.handlebars.helpers;
-	var index_configurator = req.index_configurator;
+	var configurator = req.antlers_functions.get_config();
 	var current_page = 0;
 	
 	// get posts per page config value
-	var posts_per_page = index_configurator.blog_posts_per_page;
+	var posts_per_page = configurator.blog_posts_per_page;
 	
 	// get the limit of pagination links either side of the current page. 
 	// ensures lots of pages doesn't create excessive pagination numbered links
-	var max_pagination_links = index_configurator.blog_pagination_links;
+	var max_pagination_links = configurator.blog_pagination_links;
 	
 	// get the theme from the settings
-	var theme = index_configurator.blog_theme;
+	var theme = configurator.blog_theme;
 	
 	// if the posts per page is not an integer we use 5 as default
 	if(isInt(posts_per_page) == false){
@@ -74,7 +74,7 @@ router.get('/:id', function(req, res) {
 				
 			// render the page
 			res.render('index', { 
-									"config": index_configurator, 
+									"config": configurator, 
 									"posts": posts, 
 									helpers: helpers, 
 									"total_pages": total_pages, 
