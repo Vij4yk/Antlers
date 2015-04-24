@@ -2,9 +2,10 @@ Rubbish/*
 desktop.ini
 sitemap.xml
 config.txt
-data/users.db
-data/posts.db
+backup.zip
+data/*
 node_modules/.bin/*
+node_modules/archiver/*
 node_modules/bcrypt-nodejs/*
 node_modules/body-parser/*
 node_modules/busboy/*

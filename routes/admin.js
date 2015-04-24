@@ -385,6 +385,64 @@ router.post('/action_login', function(req, res){
 	});
 });
 
+router.get('/backup', restrict, function(req, res){
+	var fs = require('fs');
+	var archiver = require('archiver');
+	var path = require('path');
+
+	fs.unlink(__dirname + 'backup.zip', function (err) {
+		var output = fs.createWriteStream('backup.zip');
+		var archive = archiver('zip');
+
+		output.on('close', function () {
+			var zip_path = path.resolve(__dirname + '/../','backup.zip');
+			res.sendfile(zip_path);
+		});
+
+		archive.on('error', function(err){
+			throw err;
+		});
+
+		archive.pipe(output);
+		
+		archive.directory(__dirname + '/../data/', 'data');
+		archive.directory(__dirname + '/../public/themes', 'public/themes');
+		archive.directory(__dirname + '/../public/user_content', 'public/user_content');
+		archive.file(__dirname + '/../config.txt', { name:'config.txt' });
+		archive.finalize();
+	});
+});
+
+router.get('/lab', restrict, function(req, res){
+	var sess = req.session;
+	var app = req.app;
+	var helpers = req.handlebars.helpers;
+	var moment = req.moment;
+	var configurator = req.antlers_functions.get_config();
+	
+	// get local vars from session
+	var sess_array = get_session_array(sess);
+	
+	// override the default layout and view directory
+	app.locals.layout = "admin_layout.hbs";
+	app.set('views',  __dirname + "\\..\\views\\");	
+	
+	res.render('admin_lab',{ 
+		"config": configurator, 
+		"post_id": "", 
+		"message": sess_array["message"], 
+		"message_type": sess_array["message_type"], 
+		"post_date": moment().format('DD/MM/YYYY HH:mm'),
+		"post_title": sess_array["post_title"], 
+		"post_body": sess_array["post_body"], 
+		"post_tags": sess_array["post_tags"], 
+		"title": 'Admin - Lab', 
+		"helpers": helpers,
+		"session": req.session
+	});
+});	
+
+
 // kill the session and log the user out
 router.get('/logout', function(req, res){
     req.session.destroy(function(){

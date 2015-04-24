@@ -53,6 +53,10 @@ body {
 	cursor: move;
 }	
 
+.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+    border: none;
+}
+
 /* SIZE (mobile/desktop) SPECIFIC SETTINGS */
 @media(min-width:768px) {
     #page-wrapper {
