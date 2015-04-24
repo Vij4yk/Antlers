@@ -49,7 +49,6 @@ function render_postlist(req, res){
 	var db = req.db;
 	var app = req.app;
 	var sess = req.session;
-	var path = require('path');
 	var configurator = req.antlers_functions.get_config();
 	var helpers = req.handlebars.helpers;
 	var message = "";
@@ -68,8 +67,7 @@ function render_postlist(req, res){
 	}
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
 	db.posts.find({}).sort({post_date: -1}).exec(function (err, post_list) {
 		res.render('admin_postlist', { 
@@ -110,8 +108,7 @@ router.get('/preview/:id', restrict, function(req, res) {
 			post_static_page = post.post_static_page;
 			
 			// override the default layout and view directory
-			app.locals.layout = "admin_layout.hbs";
-			app.set('views',  __dirname + "\\..\\views\\");
+			set_admin_view(app);
 				
 			res.render('admin_preview', { 
 				"config": configurator, 
@@ -143,8 +140,7 @@ router.get('/user/edit/:id', restrict, function(req, res) {
 	var configurator = req.antlers_functions.get_config();
 	
 	// override the default layout
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
     db.users.findOne({_id: req.params.id}, function (err, user) {
 		res.render('admin_user_edit',{
@@ -164,8 +160,7 @@ router.get('/users/current', restrict, function(req, res) {
 	var configurator = req.antlers_functions.get_config();
 	
 	// override the default layout
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
 	db.users.find({}).exec(function (err, users) {
 		res.render('admin_users_current',{
@@ -185,9 +180,9 @@ router.get('/users/new', restrict, function(req, res) {
 	var db = req.db;
 	var message = "";
 	var message_type = "";
+
 	// override the default layout
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
 	res.render('admin_users',{
 		"config": configurator, 
@@ -210,8 +205,7 @@ router.get('/users', restrict, function(req, res) {
 	var message_type = "";
 	
 	// override the default layout
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 
 	db.users.findOne({user_email: req.session.user}).exec(function (err, user) {
 		res.render('admin_users',{
@@ -424,8 +418,7 @@ router.get('/lab', restrict, function(req, res){
 	var sess_array = get_session_array(sess);
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.set('views',  __dirname + "\\..\\views\\");	
+	set_admin_view(app);
 	
 	res.render('admin_lab',{ 
 		"config": configurator, 
@@ -469,8 +462,7 @@ router.get('/editor/new', restrict, function(req, res) {
 	var sess_array = get_session_array(sess);
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.set('views',  __dirname + "\\..\\views\\");	
+	set_admin_view(app);
 	
 	res.render('admin_editor', 
 				{ 
@@ -490,7 +482,7 @@ router.get('/editor/new', restrict, function(req, res) {
 });
 
 // Editing an existing post
-router.get('/editor/:id', restrict, function(req, res) {
+router.get('/editor/:id', function(req, res) {
 	var db = req.db;
 	var sess = req.session;
 	var marked = req.marked;
@@ -503,8 +495,7 @@ router.get('/editor/:id', restrict, function(req, res) {
 	var sess_array = get_session_array(sess);
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.set('views',  __dirname + "\\..\\views\\");
+	set_admin_view(app);
 	
 	db.posts.findOne({ "post_id": Number(req.params.id) }).sort({ post_date: -1 }).exec(function (err, post){
 		if(post){
@@ -667,8 +658,7 @@ router.get('/settings', restrict, function(req, res) {
 	var themes = fs.readdirSync("public/themes");
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
 	res.render('admin_settings', { 
 		"config": configurator, 
@@ -691,8 +681,7 @@ router.get('/navigation', restrict, function(req, res) {
 	var sess_array = get_session_array(sess);
 	
 	// override the default layout and view directory
-	app.locals.layout = "admin_layout.hbs";
-	app.locals.settings.views = "views";
+	set_admin_view(app);
 	
 	// get the navigation links from the db ordering by the "nav_order" field
 	db.navigation.find({}).sort({ "nav_order": 1 }).exec(function (err, navigation){
@@ -771,8 +760,7 @@ router.get('/media', restrict, function(req, res) {
 	// get the media from DB
 	db.media.find({}).sort({ "image_date": -1 }).exec(function (err, media){
 		
-		app.locals.layout = "admin_layout.hbs";
-		app.locals.settings.views = "views";
+
 		
 		res.render('admin_media', 
 		{ 
@@ -991,6 +979,7 @@ router.post('/savepost', restrict, function(req, res) {
 function render_login_fail(config, req, res){
 	// overide the default layout
 	var app = req.app;
+	
 	app.locals.settings.views = "views";
 	app.locals.layout = "admin_login_layout.hbs";
 	
@@ -1067,11 +1056,19 @@ function get_all_posts(req, res, message, message_type) {
 	var helpers = req.handlebars.helpers;
 			
 	db.posts.find({}).sort({post_date: 1}).exec(function (err, posts) {	
-	// overide the default layout
-		app.locals.layout = "admin_layout.hbs";	
-		app.locals.settings.views = "views";
+		// overide the default layout
+		set_admin_view(app);
+		
 		res.render('admin', { "config": config, "message": message, "message_type": message_type, "posts": posts, title: 'Admin - Posts', helpers: helpers, "session": req.session });
 	});
+}
+
+function set_admin_view(app){
+	var path = require('path');
+	
+	app.locals.layout = "admin_layout.hbs";
+	var view_path = path.join(__dirname, '/../views/');
+	app.set('views',  view_path);
 }
 
 // cleans the post title by removing any invalid characters
