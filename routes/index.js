@@ -143,8 +143,10 @@ function get_all_posts(req, res, posts_per_page) {
 		
 		db.posts.find({post_date: {$lt: moment()},post_status: '1', post_static_page: 'off'}).skip(start_page).limit(posts_per_page).sort({ post_date: -1 }).exec(function(err, posts) {
 			
+			var keywords = "";
 			// fix the post array
 			for (var post in posts){
+				keywords = keywords + "," + posts[post].post_tags;
 				posts[post].post_body = marked(posts[post].post_body); 
 				posts[post].post_tags = helpers.get_tag_array(posts[post].post_tags);
 			}
@@ -169,6 +171,7 @@ function get_all_posts(req, res, posts_per_page) {
 					helpers: helpers, 
 					"total_pages": total_pages, 
 					"pagination_array": pagination_array, 
+					"post_tags_meta": keywords.substring(1),
 					"is_logged_on": is_logged_on(req),
 					theme: theme,
 					base_url: req.protocol + "://" + req.headers.host,
