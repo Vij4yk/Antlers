@@ -3,7 +3,8 @@ desktop.ini
 sitemap.xml
 config.txt
 backup.zip
-data/*
+robots.txt
+data/
 node_modules/.bin/*
 node_modules/archiver/*
 node_modules/bcrypt-nodejs/*
@@ -24,3 +25,4 @@ node_modules/multer/*
 node_modules/nedb/*
 node_modules/serve-favicon/*
 node_modules/string/*
+
