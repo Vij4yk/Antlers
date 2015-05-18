@@ -17,6 +17,7 @@ var antlers_functions = require('antlers');
 var multer = require('multer');
 var string = require('string');
 var fs = require('fs');
+//var serv_monitor = require('serv_monitor');
 
 // load the db
 var db = new nedb();
@@ -36,6 +37,7 @@ var routes = require('./routes/index');
 var page = require('./routes/page');
 var admin = require('./routes/admin');
 var tag = require('./routes/tag');
+var rss = require('./routes/rss');
 
 var app = express();
 
@@ -48,13 +50,17 @@ handlebars = handlebars.create({
     helpers: {
 		format_date: function (date) { return moment(date).format("DD/MM/YYYY"); },
 		custom_date: function (date, format) { return moment(date).format(format); },
+		current_year: function () { return moment().format("YYYY"); },
 		condensed_date: function (date) { return moment(date).format("DD/MM/YYYY"); },
+		trimstring: function (len, str) { return str.substring(0,len); },
+		trim_and_strip: function (len, str) { return string(str.substring(0, len)).stripTags().s },
 		website_title: function () { return config.website_title; },
 		post_status_text: function (status) { if (status === '0') { return "Draft"; } else { return "Published"; } },
 		post_status_class: function (status) { if (status === '0') { return "danger"; } else { return "success"; } },
 		get_tag_array: function (str_tags) { var tags = str_tags.split(','); var tags_array = []; for (var tag in tags) { if (tags[tag].trim() != "") { tags_array.push(tags[tag].trim()); } } return tags_array; },
 		times: function (n, block) { var accum = ''; for (var i = 1; i < n; ++i)accum += block.fn(i); return accum; },
 		url_encode: function (url) { url = url.replace(/ /g, "-"); url = url.replace(/#/g, ""); return url; },
+		tag_encode: function (url) { url = url.replace(/ /g, "%20"); url = url.replace(/#/g, ""); return url; },
 		ifCond: function (v1, operator, v2, options) {
 			switch (operator) {
 				case '==':
@@ -81,9 +87,9 @@ handlebars = handlebars.create({
 		},
 	}
 });
-	
+
 // environment setup
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3333);
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(multer({ dest: './public/tmp/' }))
@@ -93,24 +99,26 @@ app.use(session({
 	expires: new Date(Date.now() + 60 * 10000),
 	maxAge: 60 * 10000
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Make stuff accessible to our router
 app.use(function (req, res, next) {
-    req.db = db;
+	req.db = db;
 	req.antlers_functions = antlers_functions;
 	req.marked = marked;
 	req.moment = moment;
 	req.bcrypt = bcrypt;
 	req.handlebars = handlebars;
 	req.string = string;
-    next();
+	next();
 });
 
 // setup the routes
 app.use('/page/', page);
 app.use('/admin/', admin);
 app.use('/tag/', tag);
+app.use('/rss/', rss);
 app.use('/', routes);
 
 // write out sitemap

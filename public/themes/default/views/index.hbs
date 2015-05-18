@@ -2,7 +2,7 @@
 	<h5 class="text-muted text-center">{{custom_date this.post_date "dddd, MMMM do, YYYY"}}
 	{{#ifCond ../is_logged_on '===' 'true'}}
 		<a href="/admin/editor/{{this.post_id}}" class="glyphicon glyphicon-pencil edit-pencil"></a>
-	{{/ifCond}}	
+	{{/ifCond}}
 	</h5>
 	<div class="row" style="padding-bottom: 30px;">
 		<h1 class="text-center">
@@ -15,12 +15,12 @@
 	<div class="row" style="padding-top: 30px;">
 		<p class="pull-left">
 			{{#each this.post_tags}}
-				<span class="tags"><a href="/tag/{{this}}">{{this}}</a></span>
-				<span class="spacer">|</span> 
-			{{/each}} 
+				<span class="tags"><a href="/tag/{{tag_encode this}}">{{this}}</a></span>
+				<span class="spacer">|</span>
+			{{/each}}
 		</p>
 	</div>
 	<div class="row" style="padding-top: 30px;">
 		<hr/>
 	</div>
-{{/each}} 
+{{/each}}

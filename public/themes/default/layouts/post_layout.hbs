@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<title>{{post_title}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<meta name="description" content="{{meta_description}}">
+		{{#if post_meta_title}}
+			<title>{{post_meta_title}}</title>
+		{{else}}
+			<title>{{post_title}}</title>
+		{{/if}}
+		{{#if post_meta_description}}
+			<meta name="description" content="{{post_meta_description}}">
+		{{else}}
+			<meta name="description" content="{{meta_description}}">
+		{{/if}}
+
 		<meta name="keywords" content="{{post_tags_meta}}">
 		<meta name="robots" content="index,follow">
+		<meta charset="UTF-8">
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/bootstrap-theme.min.css' />
 		<link rel='stylesheet' href='/themes/{{theme}}/css/style.css' />
 		<link rel="stylesheet" href="/themes/{{theme}}/css/prettify.css">
+		<link rel="stylesheet" href='/stylesheets/font-awesome.min.css' />
 		<link rel="shortcut icon" href="/themes/{{theme}}/favicon.ico" />
 		<!-- Open Graph meta -->
 		<meta property="og:title" content="{{post_title}}"/>
@@ -21,23 +32,23 @@
 	<body style="padding-top: 110px;">
 		<div class="navbar-fixed-top header_bar">
 			<div class="container">
-				<div class="row">
-					<div class="col-md-10 col-md-offset-2">
-						<a class="blog_head_link pull-left" href="/"><img src="/themes/{{theme}}/images/default_logo_inverted.png" height="90px"></a>
+				<div class="row text-center">
+					<div class="col-md-12">
+						<a class="blog_head_link" href="/"><img src="/themes/{{theme}}/images/default_logo.jpg" height="90px"></a>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div>	
+		</div>
 		<div class="container">
-			<div class="row"> 
-				<div class="col-md-12"> 
+			<div class="row">
+				<div class="col-md-12">
 					<div class="row post_body">
 						<div class="text-center">
 							<ul class="list-inline navigation_menu">
 								{{#each navigation}}
 									<li>
 										<a href="{{this.nav_link}}">{{this.nav_menu}}</a>
-										
+
 									</li>
 									<li class="navigation_menu_seporator"></li>
 								{{/each}}
@@ -45,6 +56,17 @@
 						</div>
 						{{{body}}}
 					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="text-center footer">
+					<p class="footer-copyright">Copyright &copy; {{current_year}} &middot; All Rights Reserved &middot; <a href="{{config.blog_hostname}}">{{config.blog_title}}</a></p>
+					<p class="footer-sharelinks">
+						<a class="sharelink" href="{{config.blog_hostname}}/rss/feed.xml"><i class="fa fa-rss fa-lg" style="color:#FF6600"></i></a>
+						<a class="sharelink" href="https://www.facebook.com/sharer/sharer.php?u={{full_url}}"><i class="fa fa-facebook fa-lg" style="color:#3B5998"></i></a>
+						<a class="sharelink" href="https://twitter.com/home?status={{full_url}}"><i class="fa fa-twitter fa-lg" style="color:#4099FF"></i></a>
+						<a class="sharelink" href="https://plus.google.com/share?url={{full_url}}"><i class="fa fa-google-plus fa-lg" style="color:#DD4B39"></i></a>
+					</p>
 				</div>
 			</div>
 		</div>

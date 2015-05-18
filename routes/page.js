@@ -15,7 +15,7 @@ router.get('/:id', function(req, res) {
 	var marked = req.marked;
 	var moment = req.moment;
 	var app = req.app;
-	var node_pagination = req.node_pagination;
+	var antlers_functions = req.antlers_functions;
 	var helpers = req.handlebars.helpers;
 	var configurator = req.antlers_functions.get_config();
 	var current_page = 0;
@@ -61,7 +61,7 @@ router.get('/:id', function(req, res) {
 			}
 			
 			// get the pagination array
-			pagination_array = node_pagination.get_html(total_pages, current_page, max_pagination_links, posts_per_page);
+			pagination_array = antlers_functions.get_pagination_html(total_pages, current_page, max_pagination_links, posts_per_page);
 			
 			// override the default layout
 			if(theme == ""){

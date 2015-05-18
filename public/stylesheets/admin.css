@@ -15,6 +15,14 @@ body {
     border-style: solid none !important;
 }
 
+.seo-options{
+   padding-left: 0px;
+}
+
+.seo-title{
+   margin-top: 0px;
+}
+
 #frm_post_body, #dashboard_body{
 	overflow-y: auto;
 }
@@ -51,7 +59,7 @@ body {
 
 #draggable_list .dragable_item {
 	cursor: move;
-}	
+}
 
 .borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
     border: none;
@@ -159,8 +167,8 @@ body {
 }
 
 .cog_menu_item{
-	text-align: center; 
-	padding-bottom: 5px; 
+	text-align: center;
+	padding-bottom: 5px;
 	width: 110px;
 }
 
