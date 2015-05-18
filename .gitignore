@@ -3,6 +3,7 @@ desktop.ini
 sitemap.xml
 config.txt
 backup.zip
+robots.txt
 data/*
 node_modules/.bin/*
 node_modules/archiver/*
