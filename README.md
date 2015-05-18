@@ -20,7 +20,7 @@ See it in action here: http://antlersblog.net
 ## Admin
 
 You can enter the admin panel of your newly created blog by visiting the following URL in your browser:
-http://localhost:3000/admin.
+http://localhost:3333/admin.
 
 ## Documentation
 
