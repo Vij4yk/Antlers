@@ -11,7 +11,7 @@ A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (ht
 2. Enter directory from Node command/terminal
 3. Issue command: ```npm install```
 4. Start with: ```node app.js```
-5. Access the application using:  ```http://localhost:3000```
+5. Access the application using:  ```http://localhost:3333```
 
 ## Demo
 
