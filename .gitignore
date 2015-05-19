@@ -4,7 +4,10 @@ sitemap.xml
 config.txt
 backup.zip
 robots.txt
-data/
+data/media.db
+data/navigation.db
+data/posts.db
+data/users.db
 node_modules/.bin/*
 node_modules/archiver/*
 node_modules/bcrypt-nodejs/*
@@ -25,4 +28,3 @@ node_modules/multer/*
 node_modules/nedb/*
 node_modules/serve-favicon/*
 node_modules/string/*
-

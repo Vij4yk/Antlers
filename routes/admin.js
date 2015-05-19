@@ -1039,13 +1039,13 @@ function get_session_array(sess){
 
 // checks if session exists and displays "Access denied" message and redirects to login
 function restrict(req, res, next) {
-	//if (req.session.user){
+	if (req.session.user){
 		next();
-	//}else{
-	//	req.session.message = "Access denied";
-	//	req.session.message_type = "danger";
-	//	res.redirect('/admin/login');
-	//}
+	}else{
+		req.session.message = "Access denied";
+		req.session.message_type = "danger";
+		res.redirect('/admin/login');
+	}
 }
 
 // gets the file extension of a given file name
