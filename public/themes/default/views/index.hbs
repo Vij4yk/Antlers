@@ -4,7 +4,7 @@
 		<a href="/admin/editor/{{this.post_id}}" class="glyphicon glyphicon-pencil edit-pencil"></a>
 	{{/ifCond}}
 	</h5>
-	<div class="row" style="padding-bottom: 30px;">
+	<div class="row-title">
 		<h1 class="text-center">
 			<a class="post_title" href="/{{this.post_title_clean}}">{{this.post_title}}</a>
 		</h1>
@@ -12,7 +12,7 @@
 	<div class="row">
 		{{{this.post_body}}}
 	</div>
-	<div class="row" style="padding-top: 30px;">
+	<div class="row row-title">
 		<p class="pull-left">
 			{{#each this.post_tags}}
 				<span class="tags"><a href="/tag/{{tag_encode this}}">{{this}}</a></span>

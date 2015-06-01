@@ -475,6 +475,8 @@ router.get('/editor/new', restrict, function(req, res) {
 					"post_title": sess_array["post_title"],
 					"post_body": sess_array["post_body"],
 					"post_tags": sess_array["post_tags"],
+					"post_meta_title": sess_array["post_meta_title"],
+					"post_meta_description": sess_array["post_meta_description"],
 					title: 'Admin - New page',
 					helpers: helpers,
 					'session': req.session
@@ -511,25 +513,43 @@ router.get('/editor/:id', function(req, res) {
 				db_id = post._id;
 				post_static_page = "off";
 
+				// check for session values. This would occur on the odd occassion there was an error saving
+				// changes to a post. Eg: Missing/Null post_title, post_body, post_date.
+				if(sess_array["post_title"] != null){
+					post_title = sess_array["post_title"];
+				}
+				if(sess_array["post_body"] != null){
+					post_body = sess_array["post_body"];
+				}
+				if(sess_array["post_tags"] != null){
+					post_tags = sess_array["post_tags"];
+				}
+				if(sess_array["post_meta_title"] != null){
+					post_meta_title = sess_array["post_meta_title"];
+				}
+				if(sess_array["post_meta_description"] != null){
+					post_meta_description = sess_array["post_meta_description"];
+				}
+
 				res.render('admin_editor', {
-										"config": configurator,
-										"header": "Edit Post",
-										"post_id": post.post_id,
-										"message": sess_array["message"],
-										"message_type": sess_array["message_type"],
-										"db_id": db_id,
-										"post_title": post_title,
-										"post_title_clean": post_title_clean,
-										"post_body": post_body,
-										"post_date": moment(post_date).format('DD/MM/YYYY HH:mm'),
-										"post_tags": post_tags,
-										"post_status": post_status,
-										"post_static_page": post_static_page,
-										"post_meta_title": post_meta_title,
-										"post_meta_description": post_meta_description,
-										title: 'Admin - Posts',
-										helpers: helpers
-									});
+					"config": configurator,
+					"header": "Edit Post",
+					"post_id": post.post_id,
+					"message": sess_array["message"],
+					"message_type": sess_array["message_type"],
+					"db_id": db_id,
+					"post_title": post_title,
+					"post_title_clean": post_title_clean,
+					"post_body": post_body,
+					"post_date": moment(post_date).format('DD/MM/YYYY HH:mm'),
+					"post_tags": post_tags,
+					"post_status": post_status,
+					"post_static_page": post_static_page,
+					"post_meta_title": post_meta_title,
+					"post_meta_description": post_meta_description,
+					title: 'Admin - Posts',
+					helpers: helpers
+				});
 		}else{
 			// get all posts and show a message to advise the post ID does not exist
 			req.session.message = "Error: Post ID not supplied";
@@ -762,9 +782,6 @@ router.get('/media', restrict, function(req, res) {
 
 	// get the media from DB
 	db.media.find({}).sort({ "image_date": -1 }).exec(function (err, media){
-
-
-
 		res.render('admin_media',
 		{
 			title: 'Admin - Media',
@@ -862,7 +879,19 @@ router.post('/savepost', restrict, function(req, res) {
 	if(req.body.frm_post_title == ""){
 		req.session.message = "Post title is required.";
 		req.session.message_type = "danger";
-		res.redirect('/admin/editor/' + req.body.frm_post_id);
+
+		//Save the form values into the session to avoid loss
+		req.session.post_title = req.body.frm_post_title;
+		req.session.post_body = req.body.frm_post_body;
+		req.session.post_tags = req.body.frm_post_tags;
+		req.session.post_meta_title = req.body.frm_meta_title;
+		req.session.post_meta_description = req.body.frm_meta_description;
+
+		if(req.body.frm_save_type == "Edit Post"){
+			res.redirect('/admin/editor/' + req.body.frm_post_id);
+		}else{
+			res.redirect('/admin/editor/new');
+		}
 		return;
 	}
 
@@ -870,7 +899,19 @@ router.post('/savepost', restrict, function(req, res) {
 	if(req.body.frm_datetimepicker == ""){
 		req.session.message = "Post date is required.";
 		req.session.message_type = "danger";
-		res.redirect('/admin/editor/' + req.body.frm_post_id);
+
+		//Save the form values into the session to avoid loss
+		req.session.post_title = req.body.frm_post_title;
+		req.session.post_body = req.body.frm_post_body;
+		req.session.post_tags = req.body.frm_post_tags;
+		req.session.post_meta_title = req.body.frm_meta_title;
+		req.session.post_meta_description = req.body.frm_meta_description;
+
+		if(req.body.frm_save_type == "Edit Post"){
+			res.redirect('/admin/editor/' + req.body.frm_post_id);
+		}else{
+			res.redirect('/admin/editor/new');
+		}
 		return;
 	}
 
@@ -878,7 +919,19 @@ router.post('/savepost', restrict, function(req, res) {
 	if(req.body.frm_post_body == ""){
 		req.session.message = "Post body is required.";
 		req.session.message_type = "danger";
-		res.redirect('/admin/editor/' + req.body.frm_post_id);
+
+		//Save the form values into the session to avoid loss
+		req.session.post_title = req.body.frm_post_title;
+		req.session.post_body = req.body.frm_post_body;
+		req.session.post_tags = req.body.frm_post_tags;
+		req.session.post_meta_title = req.body.frm_meta_title;
+		req.session.post_meta_description = req.body.frm_meta_description;
+
+		if(req.body.frm_save_type == "Edit Post"){
+			res.redirect('/admin/editor/' + req.body.frm_post_id);
+		}else{
+			res.redirect('/admin/editor/new');
+		}
 		return;
 	}
 
@@ -1008,27 +1061,30 @@ function get_session_array(sess){
 		sess_array["post_title"] = sess.post_title;
 		sess.post_title = null;
 	}
-
 	if(sess.post_body){
 		sess_array["post_body"] = sess.post_body;
 		sess.post_body = null;
 	}
-
 	if(sess.post_tags){
 		sess_array["post_tags"] = sess.post_tags;
 		sess.post_tags = null;
 	}
-
 	if(sess.post_status){
 		sess_array["post_status"] = sess.post_status;
 		sess.post_status = null;
 	}
-
+	if(sess.post_meta_title){
+		sess_array["post_meta_title"] = sess.post_meta_title;
+		sess.post_meta_title = null;
+	}
+	if(sess.post_meta_description){
+		sess_array["post_meta_description"] = sess.post_meta_description;
+		sess.post_meta_description = null;
+	}
 	if(sess.message){
 		sess_array["message"] = sess.message;
 		sess.message = null;
 	}
-
 	if(sess.message_type){
 		sess_array["message_type"] = sess.message_type;
 		sess.message_type = null;

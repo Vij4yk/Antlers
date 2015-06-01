@@ -13,11 +13,10 @@ var marked = require('marked');
 var session = require('express-session');
 var bcrypt = require('bcrypt-nodejs');
 var handlebars = require('express-handlebars');
-var antlers_functions = require('antlers');
+var antlers_functions = require('antlers-functions');
 var multer = require('multer');
 var string = require('string');
 var fs = require('fs');
-//var serv_monitor = require('serv_monitor');
 
 // load the db
 var db = new nedb();
@@ -51,10 +50,8 @@ handlebars = handlebars.create({
 		format_date: function (date) { return moment(date).format("DD/MM/YYYY"); },
 		custom_date: function (date, format) { return moment(date).format(format); },
 		current_year: function () { return moment().format("YYYY"); },
-		condensed_date: function (date) { return moment(date).format("DD/MM/YYYY"); },
 		trimstring: function (len, str) { return str.substring(0,len); },
 		trim_and_strip: function (len, str) { return string(str.substring(0, len)).stripTags().s },
-		website_title: function () { return config.website_title; },
 		post_status_text: function (status) { if (status === '0') { return "Draft"; } else { return "Published"; } },
 		post_status_class: function (status) { if (status === '0') { return "danger"; } else { return "success"; } },
 		get_tag_array: function (str_tags) { var tags = str_tags.split(','); var tags_array = []; for (var tag in tags) { if (tags[tag].trim() != "") { tags_array.push(tags[tag].trim()); } } return tags_array; },

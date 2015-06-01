@@ -8,8 +8,10 @@ data/media.db
 data/navigation.db
 data/posts.db
 data/users.db
+public/themes/antlers/*
 node_modules/.bin/*
 node_modules/archiver/*
+node_modules/antlers-functions/*
 node_modules/bcrypt-nodejs/*
 node_modules/body-parser/*
 node_modules/busboy/*
@@ -21,6 +23,7 @@ node_modules/express/*
 node_modules/express-flash/*
 node_modules/express-handlebars/*
 node_modules/express-session/*
+node_modules/handlebars-helper
 node_modules/marked/*
 node_modules/moment/*
 node_modules/morgan/*

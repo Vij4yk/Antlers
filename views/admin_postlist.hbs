@@ -22,7 +22,7 @@
 								{{this.post_title}}
 							</td>
 							<td class="col-xs-2 pull-right">
-								<span id="dashboard_list_date" style="padding-left: 5px;" class="pull-right text-muted"><small>{{condensed_date this.post_date "YYYY-MM-DD HH:mm"}}</small></span>
+								<span id="dashboard_list_date" style="padding-left: 5px;" class="pull-right text-muted"><small>{{format_date this.post_date "YYYY-MM-DD HH:mm"}}</small></span>
 								<span class="pull-right" style="padding-left: 5px;">
 									{{#ifCond this.post_status "==" "0"}}
 										<i class="fa fa-newspaper-o text-danger"></i>

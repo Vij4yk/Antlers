@@ -3,7 +3,7 @@ Antlers
 
 ## Synopsis
 
-A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (http://nodejs.org).
+A blogging platform built using [ExpressJS](http://expressjs.com/) and [NodeJS](http://nodejs.org).
 
 ## Installation
 
@@ -11,20 +11,20 @@ A blogging platform built using ExpressJS (http://expressjs.com/) and NodeJS (ht
 2. Enter directory from Node command/terminal
 3. Issue command: ```npm install```
 4. Start with: ```node app.js```
-5. Access the application using:  ```http://localhost:3333```
+5. Access the application using:  ```[http://localhost:3333](http://localhost:3333)```
 
 ## Demo
 
-See it in action here: http://antlersblog.net
+See it in action here: [http://antlersblog.net](http://antlersblog.net)
 
 ## Admin
 
 You can enter the admin panel of your newly created blog by visiting the following URL in your browser:
-http://localhost:3333/admin.
+[http://localhost:3333](http://localhost:3333/admin).
 
 ## Documentation
 
-All documentation can be found on the Antlers blog website: http://antlersblog.net
+All documentation can be found on the Antlers blog website: [http://antlersblog.net](http://antlersblog.net)
 
 ## License
 
