@@ -1,12 +1,12 @@
 {
   "name": "antlers",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": false,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "antlers-functions": "1.0.0",
+    "antlers-functions": "1.0.1",
     "archiver": "^0.14.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.0.0",

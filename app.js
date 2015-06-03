@@ -26,6 +26,9 @@ db.users = new nedb({ filename: 'data/users.db', autoload: true });
 db.media = new nedb({ filename: 'data/media.db', autoload: true });
 db.navigation = new nedb({ filename: 'data/navigation.db', autoload: true });
 
+// setup nedb session storage
+var NedbStore = antlers_functions.setup_session(session);
+
 // markdown stuff
 marked.setOptions({
 	renderer: new marked.Renderer()
@@ -94,7 +97,8 @@ app.use(bodyParser.urlencoded())
 app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
 	expires: new Date(Date.now() + 60 * 10000),
-	maxAge: 60 * 10000
+	maxAge: 60 * 10000,
+	store: new NedbStore({ filename: 'data/session.db' })
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));

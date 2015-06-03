@@ -8,6 +8,7 @@ data/media.db
 data/navigation.db
 data/posts.db
 data/users.db
+data/session.db
 public/themes/antlers/*
 node_modules/.bin/*
 node_modules/archiver/*
