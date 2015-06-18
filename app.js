@@ -1,22 +1,23 @@
 /* global config */
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var engine = require('ejs-locals');
-var nedb = require('nedb');
-var moment = require('moment');
-var ejs = require('ejs');
-var marked = require('marked');
-var session = require('express-session');
-var bcrypt = require('bcrypt-nodejs');
-var handlebars = require('express-handlebars');
 var antlers_functions = require('antlers-functions');
-var multer = require('multer');
-var string = require('string');
+var bcrypt = require('bcrypt-nodejs');
+var bodyParser = require('body-parser');
+var compression = require('compression');
+var cookieParser = require('cookie-parser');
+var ejs = require('ejs');
+var engine = require('ejs-locals');
+var express = require('express');
+var favicon = require('serve-favicon');
 var fs = require('fs');
+var handlebars = require('express-handlebars');
+var logger = require('morgan');
+var marked = require('marked');
+var moment = require('moment');
+var multer = require('multer');
+var nedb = require('nedb');
+var path = require('path');
+var session = require('express-session');
+var string = require('string');
 
 // load the db
 var db = new nedb();
@@ -25,9 +26,6 @@ db.posts = new nedb({ filename: 'data/posts.db', autoload: true });
 db.users = new nedb({ filename: 'data/users.db', autoload: true });
 db.media = new nedb({ filename: 'data/media.db', autoload: true });
 db.navigation = new nedb({ filename: 'data/navigation.db', autoload: true });
-
-// setup nedb session storage
-var NedbStore = antlers_functions.setup_session(session);
 
 // markdown stuff
 marked.setOptions({
@@ -88,8 +86,29 @@ handlebars = handlebars.create({
 	}
 });
 
+// Control cache headers over content
+app.use(function (req, res, next) {
+	var cache_files = [".css", ".js", ".jpg", ".jpeg", ".png", ".ico", ".gif"];
+	var no_cache_files = [".html", ".htm"];
+	var file_ext = path.extname(req.url);
+	if (cache_files.indexOf(file_ext) > -1) {
+		res.set({
+			'Cache-Control': 'public, max-age=3600',
+			'Connection': 'keep-alive',
+			'Last-Modified': new Date()
+		});
+    }
+	if (no_cache_files.indexOf(file_ext) > -1) {
+		res.set({
+			'Cache-Control': 'public, max-age=0'
+		});
+	}
+    next();
+});
+
 // environment setup
 app.set('port', process.env.PORT || 3333);
+app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(multer({ dest: './public/tmp/' }))
@@ -97,10 +116,10 @@ app.use(bodyParser.urlencoded())
 app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
 	expires: new Date(Date.now() + 60 * 10000),
-	maxAge: 60 * 10000,
-	store: new NedbStore({ filename: 'data/session.db' })
+	maxAge: 60 * 10000
 }));
 
+// serving static content
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Make stuff accessible to our router

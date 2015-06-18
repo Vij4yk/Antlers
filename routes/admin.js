@@ -843,7 +843,7 @@ router.post('/upload_media', restrict, function(req, res) {
 			var db_media = {
 			   	 media_title: media_title
 			   , media_name: file.originalname
-			   , media_url: "http://" + req.headers.host + "/user_content/" + file.originalname
+			   , media_url: "/user_content/" + file.originalname
 			   , media_date: new Date()
 			   , media_size: media_size
 			   , media_type: media_type

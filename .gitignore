@@ -10,9 +10,11 @@ data/posts.db
 data/users.db
 data/session.db
 public/themes/antlers/*
+public/user_content/*
 node_modules/.bin/*
 node_modules/archiver/*
 node_modules/antlers-functions/*
+node_modules/compression/*
 node_modules/bcrypt-nodejs/*
 node_modules/body-parser/*
 node_modules/busboy/*
