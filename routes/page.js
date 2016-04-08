@@ -74,15 +74,15 @@ router.get('/:id', function(req, res) {
 
 			// render the page
 			res.render('index', {
-									"config": configurator,
-									"posts": posts,
-									helpers: helpers,
-									"total_pages": total_pages,
-									"pagination_array": pagination_array,
-									"theme": theme,
-									"is_logged_on": is_logged_on(req),
-									full_url: req.protocol + '://' + req.get('host') + req.originalUrl
-								});
+				"config": configurator,
+				"posts": posts,
+				helpers: helpers,
+				"total_pages": total_pages,
+				"pagination_array": pagination_array,
+				"theme": theme,
+				"is_logged_on": is_logged_on(req),
+				full_url: req.protocol + '://' + req.get('host') + req.originalUrl
+			});
 		});
 	});
 });

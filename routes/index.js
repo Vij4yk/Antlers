@@ -7,7 +7,6 @@ var db = router.db;
 router.get('*', function(req, res) {
 	var db = req.db;
 	var marked = req.marked;
-	var full_url = req.url;
 	var helpers = req.handlebars.helpers;
 	var post_title = url.parse(req.url).pathname.substring(1);
 	var app = req.app;
@@ -41,11 +40,6 @@ router.get('*', function(req, res) {
 	app.locals.layout = "../../public/themes/" + theme + "/layouts/post_layout.hbs";
 	app.locals.settings.views = __dirname + "/../public/themes/" + theme + "/views/";
 
-	// the DB values
-	var db_values = {
-		$post_title: post_title,
-	};
-
 	if(post_title.length > 1){
 		// get the data from the DB
 		db.posts.find({post_title_clean: post_title}, function (err, post) {
@@ -59,7 +53,8 @@ router.get('*', function(req, res) {
 				var post_tags = post[0].post_tags;
 				var post_meta_title = post[0].post_meta_title;
 				var post_meta_description = post[0].post_meta_description;
-
+				var post_meta_image = post[0].post_meta_image;
+			
 				var view_type = "post";
 				if(post[0].post_static_page == "on"){
 					// set layout and theme for static page
@@ -80,6 +75,7 @@ router.get('*', function(req, res) {
 						"post_tags_meta": post_tags,
 						"post_meta_title": post_meta_title,
 						"post_meta_description": post_meta_description,
+						"post_meta_image": post_meta_image,
 						helpers: helpers,
 						"is_logged_on": is_logged_on(req),
 						theme: theme,

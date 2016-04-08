@@ -332,7 +332,7 @@ router.post('/action_setup', function(req, res){
 			config_string = config_string + "blog_pagination_links~~2\n";
 			config_string = config_string + "blog_theme~~default\n";
 			configurator.write_config(config_string);
-			configurator.write_sitemap(db, configurator.get_config());
+			configurator.write_sitemap(db);
 
 			req.session.user = req.body.email_address;
 			req.session.user_isadmin = "true";
@@ -464,23 +464,24 @@ router.get('/editor/new', restrict, function(req, res) {
 	// override the default layout and view directory
 	set_admin_view(app);
 
-	res.render('admin_editor',
-				{
-					"config": configurator,
-					"header": "New Post",
-					"post_id": "",
-					"message": sess_array["message"],
-					"message_type": sess_array["message_type"],
-					"post_date": moment().format('DD/MM/YYYY HH:mm'),
-					"post_title": sess_array["post_title"],
-					"post_body": sess_array["post_body"],
-					"post_tags": sess_array["post_tags"],
-					"post_meta_title": sess_array["post_meta_title"],
-					"post_meta_description": sess_array["post_meta_description"],
-					title: 'Admin - New page',
-					helpers: helpers,
-					'session': req.session
-				});
+	res.render('admin_editor',{
+		"config": configurator,
+		"header": "New Post",
+		"post_id": "",
+		"message": sess_array["message"],
+		"message_type": sess_array["message_type"],
+		"post_date": moment().format('DD/MM/YYYY HH:mm'),
+		"post_title": sess_array["post_title"],
+		"post_body": sess_array["post_body"],
+		"post_tags": sess_array["post_tags"],
+		"post_meta_title": sess_array["post_meta_title"],
+		"post_meta_description": sess_array["post_meta_description"],
+		"post_meta_image": sess_array["post_meta_image"],
+		title: 'Admin - New page',
+		helpers: helpers,
+		'session': req.session,
+		layout: 'admin_layout'
+	});
 });
 
 // Editing an existing post
@@ -501,17 +502,18 @@ router.get('/editor/:id', function(req, res) {
 
 	db.posts.findOne({ "post_id": Number(req.params.id) }).sort({ post_date: -1 }).exec(function (err, post){
 		if(post){
-				post_title = post.post_title;
-				post_title_clean = post.post_title_clean;
-				post_body = post.post_body;
-				post_date = post.post_date;
-				post_tags = post.post_tags;
-				post_status = post.post_status;
-				post_static_page = post.post_static_page;
-				post_meta_title = post.post_meta_title;
-				post_meta_description = post.post_meta_description;
-				db_id = post._id;
-				post_static_page = "off";
+				var post_title = post.post_title;
+				var post_title_clean = post.post_title_clean;
+				var post_body = post.post_body;
+				var post_date = post.post_date;
+				var post_tags = post.post_tags;
+				var post_status = post.post_status;
+				var post_static_page = post.post_static_page;
+				var post_meta_title = post.post_meta_title;
+				var post_meta_description = post.post_meta_description;
+				var post_meta_image = post.post_meta_image;
+				var db_id = post._id;
+				var post_static_page = "off";
 
 				// check for session values. This would occur on the odd occassion there was an error saving
 				// changes to a post. Eg: Missing/Null post_title, post_body, post_date.
@@ -530,6 +532,9 @@ router.get('/editor/:id', function(req, res) {
 				if(sess_array["post_meta_description"] != null){
 					post_meta_description = sess_array["post_meta_description"];
 				}
+				if(sess_array["post_meta_image"] != null){
+					post_meta_image = sess_array["post_meta_image"];
+				}
 
 				res.render('admin_editor', {
 					"config": configurator,
@@ -547,6 +552,7 @@ router.get('/editor/:id', function(req, res) {
 					"post_static_page": post_static_page,
 					"post_meta_title": post_meta_title,
 					"post_meta_description": post_meta_description,
+					"post_meta_image": post_meta_image,
 					title: 'Admin - Posts',
 					helpers: helpers
 				});
@@ -868,12 +874,9 @@ router.post('/upload_media', restrict, function(req, res) {
 
 // save the post to the DB
 router.post('/savepost', restrict, function(req, res) {
-	var configurator = req.configurator;
 	var db = req.db;
-	var marked = req.marked;
-	var flash = req.flash;
 	var moment = req.moment;
-	var app = req.app;
+	var configurator = req.antlers_functions;
 
 	// validate the post_title input data. It is required for all posts
 	if(req.body.frm_post_title == ""){
@@ -886,6 +889,7 @@ router.post('/savepost', restrict, function(req, res) {
 		req.session.post_tags = req.body.frm_post_tags;
 		req.session.post_meta_title = req.body.frm_meta_title;
 		req.session.post_meta_description = req.body.frm_meta_description;
+		req.session.post_meta_image = req.body.frm_meta_image;
 
 		if(req.body.frm_save_type == "Edit Post"){
 			res.redirect('/admin/editor/' + req.body.frm_post_id);
@@ -906,6 +910,7 @@ router.post('/savepost', restrict, function(req, res) {
 		req.session.post_tags = req.body.frm_post_tags;
 		req.session.post_meta_title = req.body.frm_meta_title;
 		req.session.post_meta_description = req.body.frm_meta_description;
+		req.session.post_meta_image = req.body.frm_meta_image;
 
 		if(req.body.frm_save_type == "Edit Post"){
 			res.redirect('/admin/editor/' + req.body.frm_post_id);
@@ -926,6 +931,7 @@ router.post('/savepost', restrict, function(req, res) {
 		req.session.post_tags = req.body.frm_post_tags;
 		req.session.post_meta_title = req.body.frm_meta_title;
 		req.session.post_meta_description = req.body.frm_meta_description;
+		req.session.post_meta_image = req.body.frm_meta_image;
 
 		if(req.body.frm_save_type == "Edit Post"){
 			res.redirect('/admin/editor/' + req.body.frm_post_id);
@@ -951,7 +957,8 @@ router.post('/savepost', restrict, function(req, res) {
 		$post_status: req.body.frm_post_status,
 		$post_static_page: req.body.frm_static_page,
 		$post_meta_title: req.body.frm_meta_title,
-		$post_meta_description: req.body.frm_meta_description
+		$post_meta_description: req.body.frm_meta_description,
+		$post_meta_image: req.body.frm_meta_image
 	};
 
 	if(req.body.frm_save_type == "Edit Post"){
@@ -967,9 +974,14 @@ router.post('/savepost', restrict, function(req, res) {
 													post_static_page: db_values["$post_static_page"],
 													post_meta_title: db_values["$post_meta_title"],
 													post_meta_description: db_values["$post_meta_description"],
+													post_meta_image: db_values["$post_meta_image"],
 													post_id: Number(req.body.frm_post_id)
 											  }}, function (err, numReplaced) {
 			db.posts.persistence.compactDatafile();
+			
+			// write updated sitemap
+			configurator.write_sitemap(db);
+			
 			if(err) {
 				if(err.errno == '19')
 				{
@@ -1006,9 +1018,10 @@ router.post('/savepost', restrict, function(req, res) {
 				   , post_date: db_values["$post_date"]["_d"]
 				   , post_status: db_values["$post_status"]
 				   , post_static_page: db_values["$post_static_page"]
-					, post_meta_title: db_values["$post_meta_title"]
-					, post_meta_description: db_values["$post_meta_description"]
-				   };
+				   , post_meta_title: db_values["$post_meta_title"]
+				   , post_meta_description: db_values["$post_meta_description"]
+				   , post_meta_image: db_values["$post_meta_image"]
+			};
 
 			// check to see if post ID is existing
 			db.posts.count({"post_title": db_values["$post_title"]}, function (err, post_count) {
@@ -1020,6 +1033,9 @@ router.post('/savepost', restrict, function(req, res) {
 				}
 				// commit to the db
 				db.posts.insert(doc, function (err, newDoc) {
+					// write sitemap
+					configurator.write_sitemap(db);
+					
 					if(post_count > 0){
 						req.session.message = "Duplicate post title. Please change.";
 						req.session.message_type = "danger";
@@ -1080,6 +1096,10 @@ function get_session_array(sess){
 	if(sess.post_meta_description){
 		sess_array["post_meta_description"] = sess.post_meta_description;
 		sess.post_meta_description = null;
+	}
+	if(sess.post_meta_image){
+		sess_array["post_meta_image"] = sess.post_meta_image;
+		sess.post_meta_image = null;
 	}
 	if(sess.message){
 		sess_array["message"] = sess.message;
