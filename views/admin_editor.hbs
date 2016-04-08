@@ -41,7 +41,7 @@
 							<li>
 								<div class="center-block cog_menu_item">
 									<div class="btn btn-warning btn-sm center-block">
-										<i class="fa fa-magnet"></i> &nbsp;Static post &nbsp;<input type="checkbox" name="frm_static_page" {{#ifCond post_static_page '==' 'on'}}checked{{/ifCond}} >
+										<i class="fa fa-magnet"></i> &nbsp;Static post &nbsp;<input type="checkbox" name="frm_static_page" {{#ifCond post_static_page "==" "on"}}checked{{/ifCond}} >
 									</div>
 								</div>
 							</li>
@@ -91,6 +91,11 @@
 				<label for="frm_meta_description">Meta description:</label>
 				<textarea id="frm_meta_description" name="frm_meta_description" class="form-control" rows="3">{{post_meta_description}}</textarea>
 				<p class="help-block">This will populate the meta description. Try keep under 155 characters. See <a href="https://moz.com/learn/seo/meta-description">more</a></p>
+			</div>
+			<div class="form-group">
+				<label for="frm_meta_image">Meta image:</label>
+				<textarea id="frm_meta_image" name="frm_meta_image" class="form-control" rows="3">{{post_meta_image}}</textarea>
+				<p class="help-block">Full URL to an image that will show when sharing the URL on social media.</p>
 			</div>
 	</div>
 	</form>
