@@ -52,6 +52,7 @@ handlebars = handlebars.create({
 		custom_date: function (date, format) { return moment(date).format(format); },
 		current_year: function () { return moment().format("YYYY"); },
 		trimstring: function (len, str) { return str.substring(0,len); },
+		trim: function (str) { return str.trim(); },
 		trim_and_strip: function (len, str) { return string(str.substring(0, len)).stripTags().s },
 		post_status_text: function (status) { if (status === '0') { return "Draft"; } else { return "Published"; } },
 		post_status_class: function (status) { if (status === '0') { return "danger"; } else { return "success"; } },
