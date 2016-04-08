@@ -1,5 +1,5 @@
 /* global config */
-var antlers_functions = require('antlers-functions');
+var antlers_functions = require('./routes/antlers-functions');
 var bcrypt = require('bcrypt-nodejs');
 var bodyParser = require('body-parser');
 var compression = require('compression');
@@ -18,6 +18,7 @@ var nedb = require('nedb');
 var path = require('path');
 var session = require('express-session');
 var string = require('string');
+var nedb_store = require('nedb-session-store')(session);
 
 // load the db
 var db = new nedb();
@@ -116,8 +117,17 @@ app.use(multer({ dest: './public/tmp/' }))
 app.use(bodyParser.urlencoded())
 app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
-	expires: new Date(Date.now() + 60 * 10000),
-	maxAge: 60 * 10000
+    resave: false,
+    saveUninitialized: true,
+    secret: "pAgGxo8Hzg7PFlv1HpO8Eg0Y6xtP7zYx",
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      maxAge: 60 * 10000
+    },
+    store: new nedb_store({
+      filename: 'data/sessions.db'
+    })
 }));
 
 // serving static content
