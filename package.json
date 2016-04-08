@@ -6,7 +6,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "antlers-functions": "1.0.1",
     "archiver": "^0.14.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.0.0",
@@ -24,6 +23,7 @@
     "morgan": "~1.0.0",
     "multer": "^0.1.0",
     "nedb": "^0.11.0",
+    "nedb-session-store": "^1.1.1",
     "serve-favicon": "^2.2.0",
     "string": "^3.0.0"
   },
